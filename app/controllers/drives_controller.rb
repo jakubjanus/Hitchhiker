@@ -1,3 +1,4 @@
+ # -*- coding: utf-8 -*-
 class DrivesController < ApplicationController
   
   before_filter :authenticate_user!, :only => [:create, :edit, :destroy]
