@@ -1,0 +1,9 @@
+- content_for :notice do
+  - if flash[:notice]=='Nie jesteś zalogowany.'
+    = link_to 'zaloguj się', new_user_session_path
+    %p 
+      Jeśli nie masz jeszcze konta możesz zarejestrować się za darmo.
+      = link_to 'zarejestruj', new_user_registration_path
+
+%h1 Witaj w hitchhiker!
+%p Hitchhiker to serwis dla ludzi szukających lub oferujących transport.

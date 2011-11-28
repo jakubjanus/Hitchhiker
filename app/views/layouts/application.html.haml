@@ -1,0 +1,28 @@
+!!! XML
+!!!
+%html
+  %head
+    %title Hitchhiker
+    = stylesheet_link_tag    "application"
+    = javascript_include_tag "application"
+    = yield :javascripts_to_load
+    = csrf_meta_tags
+  
+  %body
+    
+    = render 'shared/app_menu'
+    
+    - if flash[:notice]
+      .notice
+        = flash[:notice]
+        = yield :notice
+    - if flash[:error]
+      .error
+        = flash[:error]
+        = yield :error
+
+    = yield
+    
+    - if current_user
+      = link_to 'wyloguj', destroy_user_session_path, :method => :delete
+

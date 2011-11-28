@@ -1,0 +1,39 @@
+- if @logged_in
+  = content_for :javascripts_to_load do
+    = javascript_include_tag 'jquery-1.6.4'
+    = javascript_include_tag "http://maps.googleapis.com/maps/api/js?key=AIzaSyDa-llwFFalhiAG7hDfGYinRC5RohcfrBU&sensor=false"
+    = javascript_include_tag 'new_drive'
+
+  %h1 Dodaj nową trasę
+  
+  = form_for @drive do |f|
+    #from
+      = f.label 'z'
+      = text_field_tag :start_address, nil, {:id => 'start_addr', :onchange => 'updateMap()'}
+    #through
+      = f.label 'przez'
+      = text_field_tag :through0, nil, :onchange => "updateMap()"
+      %button{:type => "button", :onclick => "throughPlus()"} plus
+      %br/
+    #to
+      = f.label 'do'
+      = text_field_tag :destination_address, nil, {:id => 'dest_addr', :onchange => 'updateMap()'}
+    #seats
+      = f.label 'ilość miejsc:'
+      = f.text_field :seats
+    #date_picker
+      = f.label 'data wyjazdu:'
+      = f.date_select :date
+    #submit
+      = f.submit 'dodaj trasę'
+
+  #map_canvas{:style => "width:400px; height:400px;"}
+    
+- else
+  %p
+    Aby kontunuować musisz być zalogowany.
+  %p
+    Jeśli nie masz konta, możesz się 
+    = link_to 'zarejestrować.', new_user_registration_path
+
+  = render "shared/login_panel"

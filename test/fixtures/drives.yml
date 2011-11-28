@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/Fixtures.html
+
+one:
+  start_address: MyString
+  destination_address: MyString
+  seats: 1
+  free_seats: 1
+
+two:
+  start_address: MyString
+  destination_address: MyString
+  seats: 1
+  free_seats: 1
