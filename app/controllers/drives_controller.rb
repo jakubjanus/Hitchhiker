@@ -35,11 +35,11 @@ class DrivesController < ApplicationController
                         :destination_city_id => destination_city.id
       })
     if drive.save
-      flash[:notice] = "Pomyślnie dodano trasę."
+      flash[:notice] = "Pomyslnie dodano trase."
       redirect_to root_path
     else
       puts "date:" + params[:drive][:date]
-      flash[:error] = "Wystąpił błąd przy dodawaniu trasy" + drive.save!
+      flash[:error] = "Wystapil blad przy dodawaniu trasy" + drive.save!
       render :new
     end
   end
