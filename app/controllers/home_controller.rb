@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
   def index
     unless current_user
-      flash[:notice] = 'Nie jesteś zalogowany.'
+      flash[:notice] = 'Nie jestes zalogowany.'
     end
   end
 
