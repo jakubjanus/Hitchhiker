@@ -18,11 +18,11 @@ class DrivesController < ApplicationController
   
   def create
     start_city = City.findByName(params[:start_address])
-    if start_city==[]
+    if start_city.nil?
       start_city = City.create({:name => params[:start_address], :latitude => 0, :longitude => 0})
     end
     destination_city = City.findByName(params[:destination_address])
-    if destination_city==[]
+    if destination_city.nil?
       destination_city = City.create({:name => params[:destination_address], :latitude => 0, :longitude => 0})
     end
     
