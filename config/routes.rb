@@ -5,6 +5,11 @@ Hitchhiker::Application.routes.draw do
 
   #devise_for :users
   resources :drives
+  resources :cities do
+    collection do
+      get 'getMatchedCities'
+    end
+  end
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

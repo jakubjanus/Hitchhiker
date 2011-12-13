@@ -36,6 +36,7 @@ class DrivesController < ApplicationController
       })
     if drive.save
       flash[:notice] = "Pomyslnie dodano trase."
+      add_mid_locations_to_drive(drive)
       redirect_to root_path
     else
       puts "date:" + params[:drive][:date]
@@ -53,5 +54,21 @@ class DrivesController < ApplicationController
     Date.new(params["#{field_name.to_s}(1i)"].to_i, 
        params["#{field_name.to_s}(2i)"].to_i, 
        params["#{field_name.to_s}(3i)"].to_i)
+  end
+  
+  def add_mid_locations_to_drive(drive)
+    i = 0
+    mid_location = params[("through"+i.to_s).to_sym]
+    
+    until mid_location.blank?
+      city = City.findByName(mid_location)
+      if city.nil?
+        city = City.create({:name => mid_location, :latitude => 0, :longitude => 0})
+      end
+      
+      drive.add_mid_location(city)
+      i = i+1
+      mid_location = params[("through"+i.to_s).to_sym]
+    end
   end
 end

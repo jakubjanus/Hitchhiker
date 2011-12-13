@@ -1,23 +1,26 @@
 - if @logged_in
   = content_for :javascripts_to_load do
-    = javascript_include_tag 'jquery-1.6.4'
+    -#= javascript_include_tag 'jquery-1.7.1'
     = javascript_include_tag "http://maps.googleapis.com/maps/api/js?key=AIzaSyDa-llwFFalhiAG7hDfGYinRC5RohcfrBU&sensor=false"
-    = javascript_include_tag 'new_drive'
+    = stylesheet_link_tag 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css'
+    = javascript_include_tag 'http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js'
+    = javascript_include_tag 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js'
+    
 
   %h1 Dodaj nową trasę
   
   = form_for @drive do |f|
     #from
       = f.label 'z'
-      = text_field_tag :start_address, nil, {:id => 'start_addr', :onchange => 'updateMap()'}
+      = text_field_tag :start_address, nil, {:id => 'start_addr'}
     #through
       = f.label 'przez'
-      = text_field_tag :through0, nil, :onchange => "updateMap()"
-      %button{:type => "button", :onclick => "throughPlus()"} plus
+      = text_field_tag :through0, nil
+      %button{:type => "button", :id => "throughButton"} plus
       %br/
     #to
       = f.label 'do'
-      = text_field_tag :destination_address, nil, {:id => 'dest_addr', :onchange => 'updateMap()'}
+      = text_field_tag :destination_address, nil, {:id => 'dest_addr'}
     #seats
       = f.label 'ilość miejsc:'
       = f.text_field :seats
