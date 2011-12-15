@@ -3,6 +3,18 @@ class ServerSide
     
   loadCities: (name,onLoad) =>
     $.getJSON("#{@baseUrl}/cities/getMatchedCities?name=#{name}", {}, onLoad)
+    
+  submitDrive: (onConfirm, startAddr, destAddr, thrs, date, seats) =>
+    $.post("#{@baseUrl}/drives", {
+      start_address:startAddr
+      #through0:kielce
+   #   destination_address:destAddr,
+   #   drive[seats]:seats,
+   #   drive[date(1i)]:date[0],
+   #   drive[date(2i)]:date[1],
+   #   drive[date(3i)]:date[2],
+   #   commit:"dodaj trasę"
+    }, onConfirm)
 
 class MapView
   constructor: (@mapModel, @serverSide) ->
@@ -54,12 +66,18 @@ class MapView
     $('#'+buttonId).change (ev) ->
       map.updateMap()
 
+class LatLon
+  constructor: (@latitude, @longitude) ->
+
 class Map
   constructor: (@startAddField, @destAddField) ->
     @throughCount = 0
     baseUrl = (/http:\/\/[a-z0-9]+([\-\.:]{1}[a-z0-9]+)*/.exec document.location.href)[0]
     @serverSide = new ServerSide(baseUrl)
     @mapView = new MapView(@,@serverSide)
+    @startLatLon
+    @destLatLon
+    @throughLatLon = []
     
   initializeMap: =>
       
@@ -73,23 +91,33 @@ class Map
       @mapView.addAutocompletionToElement('start_addr')
       @mapView.addAutocompletionToElement('dest_addr')
       @mapView.addAutocompletionToElement('through0')
+      
+      serverSide = @serverSide
+      $('#new_drive').submit (event) ->
+        event.preventDefault()
+        serverSide.submitDrive(null, "wrocław", "warszawa", [], [], 2)
 
   updateMap: =>
+    console.log "upd"
     startAddress = $('#'+@startAddField).val()
     destAddress = $('#'+@destAddField).val()
     map = @map
     
     unless startAddress is ""
+      console.log "update startaddr"
       @geocoder.geocode
         address: startAddress,
         (results, status) ->
           if @startMarker?
             @startMarker.setMap null
           if status is google.maps.GeocoderStatus.OK
+            location = results[0].geometry.location
             @startMarker = new google.maps.Marker(
               map: map
-              position: results[0].geometry.location
+              position: location
             )
+            @startLatLon = new LatLon(location.lat(), location.lng())
+            console.log @startLatLon
           else
             alert "Błąd w przetwarzaniu danych: " + status + 'wartosc pola ' + @startAddField + ' to ' + startAddress
           
@@ -100,16 +128,22 @@ class Map
           if @destMarker?
             @destMarker.setMap null
           if status is google.maps.GeocoderStatus.OK
+            location = results[0].geometry.location
             @destMarker = new google.maps.Marker(
               map: map
-              position: results[0].geometry.location
+              position: location
             )
+            @destLatLon = new LatLon(location.lat(), location.lng())
           else
             alert "Błąd w przetwarzaniu danych: " + status
     
     if startAddress isnt "" and destAddress isnt ""
       waypoints = @mapView.getWaypoints()
+      console.log waypoints
       mapView = @mapView
+      serverSide = @serverSide
+      geocoder = @geocoder
+      mapM = @
       request =
         origin: startAddress,
         destination: destAddress,
@@ -119,11 +153,29 @@ class Map
         (result, status) ->
           if status is google.maps.DirectionsStatus.OK
             mapView.setDirections(result)
+            mapM.getLatLngsFromWaypoints(waypoints)
           else
             alert "Błąd w przetwarzaniu danych: " + status
-
-
-
+  
+  getLatLngsFromWaypoints: (waypoints) =>
+    console.log "get latlns th"
+    latlngs = []
+    geocoder = @geocoder
+    if waypoints
+      for waypoint in waypoints
+        geocoder.geocode
+          address: waypoint.location,
+          (results, status) ->
+            if status is google.maps.GeocoderStatus.OK
+              location = results[0].geometry.location
+              latlngs.push new LatLon(location.lat(), location.lng())
+            else
+              console.log "cos poszlo zle"
+    console.log latlngs
+    latlngs
+  
+  addLatLongParamsOnSabmit: (submitId) =>
+    
 
 $ ->
   mapV = new Map('start_addr','dest_addr')
