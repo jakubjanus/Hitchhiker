@@ -56,9 +56,9 @@ class MapView
 
 class Map
   constructor: (@startAddField, @destAddField) ->
-    @waypoints = []
     @throughCount = 0
-    @serverSide = new ServerSide("http://localhost:3000")
+    baseUrl = (/http:\/\/[a-z0-9]+([\-\.:]{1}[a-z0-9]+)*/.exec document.location.href)[0]
+    @serverSide = new ServerSide(baseUrl)
     @mapView = new MapView(@,@serverSide)
     
   initializeMap: =>
