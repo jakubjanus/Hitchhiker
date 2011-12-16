@@ -4,17 +4,10 @@ class ServerSide
   loadCities: (name,onLoad) =>
     $.getJSON("#{@baseUrl}/cities/getMatchedCities?name=#{name}", {}, onLoad)
     
-  submitDrive: (onConfirm, startAddr, destAddr, thrs, date, seats) =>
-    $.post("#{@baseUrl}/drives", {
-      start_address:startAddr
-      #through0:kielce
-   #   destination_address:destAddr,
-   #   drive[seats]:seats,
-   #   drive[date(1i)]:date[0],
-   #   drive[date(2i)]:date[1],
-   #   drive[date(3i)]:date[2],
-   #   commit:"dodaj trasę"
-    }, onConfirm)
+  createLatLonCookie: (start, dest, throughs) =>
+    console.log start
+    console.log dest
+    console.log throughs
 
 class MapView
   constructor: (@mapModel, @serverSide) ->
@@ -90,21 +83,14 @@ class Map
     
       @mapView.addAutocompletionToElement('start_addr')
       @mapView.addAutocompletionToElement('dest_addr')
-      @mapView.addAutocompletionToElement('through0')
-      
-      serverSide = @serverSide
-      $('#new_drive').submit (event) ->
-        event.preventDefault()
-        serverSide.submitDrive(null, "wrocław", "warszawa", [], [], 2)
+      @mapView.addAutocompletionToElement('through0')     
 
   updateMap: =>
-    console.log "upd"
     startAddress = $('#'+@startAddField).val()
     destAddress = $('#'+@destAddField).val()
     map = @map
     
     unless startAddress is ""
-      console.log "update startaddr"
       @geocoder.geocode
         address: startAddress,
         (results, status) ->
@@ -117,7 +103,6 @@ class Map
               position: location
             )
             @startLatLon = new LatLon(location.lat(), location.lng())
-            console.log @startLatLon
           else
             alert "Błąd w przetwarzaniu danych: " + status + 'wartosc pola ' + @startAddField + ' to ' + startAddress
           
@@ -139,7 +124,6 @@ class Map
     
     if startAddress isnt "" and destAddress isnt ""
       waypoints = @mapView.getWaypoints()
-      console.log waypoints
       mapView = @mapView
       serverSide = @serverSide
       geocoder = @geocoder
@@ -153,12 +137,14 @@ class Map
         (result, status) ->
           if status is google.maps.DirectionsStatus.OK
             mapView.setDirections(result)
-            mapM.getLatLngsFromWaypoints(waypoints)
+            throughs = mapM.getLatLngsFromWaypoints(waypoints)
+            start = mapM.getLatLngFromCity(startAddress)
+            dest = mapM.getLatLngFromCity(destAddress)
+            serverSide.createLatLonCookie(start, dest, throughs)
           else
             alert "Błąd w przetwarzaniu danych: " + status
   
   getLatLngsFromWaypoints: (waypoints) =>
-    console.log "get latlns th"
     latlngs = []
     geocoder = @geocoder
     if waypoints
@@ -171,11 +157,20 @@ class Map
               latlngs.push new LatLon(location.lat(), location.lng())
             else
               console.log "cos poszlo zle"
-    console.log latlngs
     latlngs
-  
-  addLatLongParamsOnSabmit: (submitId) =>
     
+  getLatLngFromCity: (city) =>
+    latlng = new LatLon(0,0)
+    @geocoder.geocode
+      address: city
+      (results, status) ->
+        if status is google.maps.GeocoderStatus.OK
+          location = results[0].geometry.location
+          latlng.latitude = location.lat()
+          latlng.longitude = location.lng()
+        else
+          console.log "cos poszlo zle"
+    latlng
 
 $ ->
   mapV = new Map('start_addr','dest_addr')
