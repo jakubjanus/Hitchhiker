@@ -17,13 +17,15 @@ class ServerSide
     data.push
       name: "startLatLon"
       value: @start.toJSON()
-    i = 0
+
     throughs = @throughs
     tJSONArray = '{ "throughsLatLon" : ['
+    coma = ''
     for through in throughs
-      tJSONArray = tJSONArray + throughs[i].toJSON()
-      i++
-    tJSONArray = tJSONArray + "}"
+      tJSONArray = tJSONArray + coma + through.toJSON()
+      coma = ','
+      
+    tJSONArray = tJSONArray + "] }"
     data.push
       name: "throughsLatLon"
       value: tJSONArray
