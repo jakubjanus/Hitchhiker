@@ -17,30 +17,34 @@ class DrivesController < ApplicationController
   end
   
   def create
-    start_city = City.findByName(params[:start_address])
-    if start_city.nil?
-      start_city = City.create({:name => params[:start_address], :latitude => 0, :longitude => 0})
-    end
-    destination_city = City.findByName(params[:destination_address])
-    if destination_city.nil?
-      destination_city = City.create({:name => params[:destination_address], :latitude => 0, :longitude => 0})
-    end
+    if check_required_params
+      start_city = City.findByName(params[:start_address])
+      if start_city.nil?
+        start_city = City.create({:name => params[:start_address], :latitude => 0, :longitude => 0})
+      end
+      destination_city = City.findByName(params[:destination_address])
+      if destination_city.nil?
+        destination_city = City.create({:name => params[:destination_address], :latitude => 0, :longitude => 0})
+      end
     
-    ddate = build_date_from_params("date",params[:drive])
-    drive = Drive.new({:seats => params[:drive][:seats],
+      ddate = build_date_from_params("date",params[:drive])
+      drive = Drive.new({:seats => params[:drive][:seats],
                         :free_seats => params[:drive][:seats],
                         :date => ddate,
                         :user_id => current_user.id,
                         :start_city_id => start_city.id,
                         :destination_city_id => destination_city.id
-      })
-    if drive.save
-      flash[:notice] = "Pomyslnie dodano trase."
-      add_mid_locations_to_drive(drive)
-      redirect_to root_path
+        })
+      if drive.save
+        flash[:notice] = "Pomyslnie dodano trase."
+        add_mid_locations_to_drive(drive)
+        redirect_to root_path
+      else
+        flash[:error] = "Wystapil blad przy dodawaniu trasy" + drive.save!
+        render :new
+      end
     else
-      puts "date:" + params[:drive][:date]
-      flash[:error] = "Wystapil blad przy dodawaniu trasy" + drive.save!
+      flash[:error] = "Brak wymaganych pol"
       render :new
     end
   end
@@ -70,5 +74,13 @@ class DrivesController < ApplicationController
       i = i+1
       mid_location = params[("through"+i.to_s).to_sym]
     end
+  end
+  
+  def check_required_params
+    cond = true
+    if params[:start_address].blank? || params[:destination_address].blank? || params[:drive][:seats].blank?
+      cond = false
+    end
+    cond
   end
 end

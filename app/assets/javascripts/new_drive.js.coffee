@@ -1,13 +1,38 @@
+class LatLon
+  constructor: (@latitude, @longitude) ->
+
+  toJSON: =>
+    res = "{ latitude: " + @latitude + ", longitude: "+ @longitude + "}"
+  
 class ServerSide
   constructor: (@baseUrl) ->
     
   loadCities: (name,onLoad) =>
     $.getJSON("#{@baseUrl}/cities/getMatchedCities?name=#{name}", {}, onLoad)
     
-  createLatLonCookie: (start, dest, throughs) =>
-    console.log start
-    console.log dest
-    console.log throughs
+  addLatLon: (@start, @throughs, @dest) =>
+
+  submitDrive: =>
+    data = $('#new_drive').serializeArray()
+    data.push
+      name: "startLatLon"
+      value: @start.toJSON()
+    i = 0
+    throughs = @throughs
+    tJSONArray = '{ "throughsLatLon : ["'
+    for through in throughs
+      tJSONArray = tJSONArray + throughs[i].toJSON()
+      i++
+    tJSONArray = tJSONArray + "}"
+    data.push
+      name: "throughsLatLon"
+      value: tJSONArray
+    data.push
+      name: "destLatLon"
+      value: @dest.toJSON()
+    
+    console.log data
+    $.post("#{@baseUrl}/drives", data)
 
 class MapView
   constructor: (@mapModel, @serverSide) ->
@@ -59,8 +84,6 @@ class MapView
     $('#'+buttonId).change (ev) ->
       map.updateMap()
 
-class LatLon
-  constructor: (@latitude, @longitude) ->
 
 class Map
   constructor: (@startAddField, @destAddField) ->
@@ -73,7 +96,6 @@ class Map
     @throughLatLon = []
     
   initializeMap: =>
-      
       @geocoder = new google.maps.Geocoder()
       @directionsService = new google.maps.DirectionsService()
 
@@ -84,6 +106,11 @@ class Map
       @mapView.addAutocompletionToElement('start_addr')
       @mapView.addAutocompletionToElement('dest_addr')
       @mapView.addAutocompletionToElement('through0')     
+      
+      serverSide = @serverSide
+      $('#new_drive').submit (event) ->
+        event.preventDefault()
+        serverSide.submitDrive()
 
   updateMap: =>
     startAddress = $('#'+@startAddField).val()
@@ -102,7 +129,7 @@ class Map
               map: map
               position: location
             )
-            @startLatLon = new LatLon(location.lat(), location.lng())
+            #@startLatLon = new LatLon(location.lat(), location.lng())
           else
             alert "Błąd w przetwarzaniu danych: " + status + 'wartosc pola ' + @startAddField + ' to ' + startAddress
           
@@ -118,7 +145,7 @@ class Map
               map: map
               position: location
             )
-            @destLatLon = new LatLon(location.lat(), location.lng())
+            #@destLatLon = new LatLon(location.lat(), location.lng())
           else
             alert "Błąd w przetwarzaniu danych: " + status
     
@@ -140,7 +167,7 @@ class Map
             throughs = mapM.getLatLngsFromWaypoints(waypoints)
             start = mapM.getLatLngFromCity(startAddress)
             dest = mapM.getLatLngFromCity(destAddress)
-            serverSide.createLatLonCookie(start, dest, throughs)
+            serverSide.addLatLon(start, throughs, dest)
           else
             alert "Błąd w przetwarzaniu danych: " + status
   
@@ -149,18 +176,12 @@ class Map
     geocoder = @geocoder
     if waypoints
       for waypoint in waypoints
-        geocoder.geocode
-          address: waypoint.location,
-          (results, status) ->
-            if status is google.maps.GeocoderStatus.OK
-              location = results[0].geometry.location
-              latlngs.push new LatLon(location.lat(), location.lng())
-            else
-              console.log "cos poszlo zle"
+        latlngs.push @getLatLngFromCity(waypoint.location)
     latlngs
     
   getLatLngFromCity: (city) =>
     latlng = new LatLon(0,0)
+    loc = undefined
     @geocoder.geocode
       address: city
       (results, status) ->
@@ -168,8 +189,13 @@ class Map
           location = results[0].geometry.location
           latlng.latitude = location.lat()
           latlng.longitude = location.lng()
+          #loc = location
+          #latlng = new LatLon(location.lat(), location.lng())
         else
           console.log "cos poszlo zle"
+    #console.log latlng
+    #console.log latlng.latitude
+    #console.log loc
     latlng
 
 $ ->
