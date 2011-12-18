@@ -21,12 +21,14 @@ class DrivesController < ApplicationController
       start_city = City.findByName(params[:start_address])
       if start_city.nil?
         latlon = ActiveSupport::JSON.decode(params[:startLatLon])
-        start_city = City.create({:name => params[:start_address], :latitude => latlon['latitude'], :longitude => latlon['longitude']})
+        start_city = City.create({:name => params[:start_address], :latitude => latlon['latitude'].to_f.round(3), 
+          :longitude => latlon['longitude'].to_f.round(3) })
       end
       destination_city = City.findByName(params[:destination_address])
       if destination_city.nil?
         latlon = ActiveSupport::JSON.decode(params[:startLatLon])
-        destination_city = City.create({:name => params[:destination_address], :latitude => latlon['latitude'], :longitude => latlon['longitude']})
+        destination_city = City.create({:name => params[:destination_address], :latitude => latlon['latitude'].to_f.round(3), 
+          :longitude => latlon['longitude'].to_f.round(3) })
       end
     
       ddate = build_date_from_params("date", params[:drive])
@@ -71,7 +73,8 @@ class DrivesController < ApplicationController
       if city.nil?
         latlon = ActiveSupport::JSON.decode(params[:throughsLatLon])['throughsLatLon'][i]
 
-        city = City.create({:name => mid_location, :latitude => latlon['latitude'], :longitude => latlon['longitude']})
+        city = City.create({:name => mid_location, :latitude => latlon['latitude'].to_f.round(3), 
+          :longitude => latlon['longitude'].to_f.round(3) })
       end
       
       drive.add_mid_location(city)
