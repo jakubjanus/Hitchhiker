@@ -19,12 +19,16 @@ class DrivesController < ApplicationController
   def create
     if check_required_params
       start_city = City.findByName(params[:start_address])
+      puts "LATITUDE LATITUDE : --------"
+      puts latlon = ActiveSupport::JSON.decode(params[:startLatLon])['latitude']
       if start_city.nil?
-        start_city = City.create({:name => params[:start_address], :latitude => 0, :longitude => 0})
+        latlon = ActiveSupport::JSON.decode(params[:startLatLon])
+        start_city = City.create({:name => params[:start_address], :latitude => latlon['latitude'], :longitude => latlon['longitude']})
       end
       destination_city = City.findByName(params[:destination_address])
       if destination_city.nil?
-        destination_city = City.create({:name => params[:destination_address], :latitude => 0, :longitude => 0})
+        latlon = ActiveSupport::JSON.decode(params[:startLatLon])
+        destination_city = City.create({:name => params[:destination_address], :latitude => latlon['latitude'], :longitude => latlon['longitude']})
       end
     
       ddate = build_date_from_params("date",params[:drive])

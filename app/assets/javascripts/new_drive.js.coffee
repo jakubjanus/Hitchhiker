@@ -2,7 +2,7 @@ class LatLon
   constructor: (@latitude, @longitude) ->
 
   toJSON: =>
-    res = "{ latitude: " + @latitude + ", longitude: "+ @longitude + "}"
+    res = '{ "latitude": "' + @latitude + '" , "longitude": "' + @longitude + '"}'
   
 class ServerSide
   constructor: (@baseUrl) ->
@@ -19,7 +19,7 @@ class ServerSide
       value: @start.toJSON()
     i = 0
     throughs = @throughs
-    tJSONArray = '{ "throughsLatLon : ["'
+    tJSONArray = '{ "throughsLatLon" : ['
     for through in throughs
       tJSONArray = tJSONArray + throughs[i].toJSON()
       i++
