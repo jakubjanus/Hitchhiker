@@ -58,7 +58,7 @@ class MapView
   throughPlus: =>
     @throughCount++
     id = 'through' + @throughCount
-    $('#through').append '<input id="'+id+'" name="' + id + '" type="text"/><br/>'
+    $('#through').append '<input id="'+id+'" name="' + id + '" type="text" autocomplete="off"/><br/>'
     @addAutocompletionToElement(id)
     mapModel = @mapModel
     $('#'+id).change (ev) ->

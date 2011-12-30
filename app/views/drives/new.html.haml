@@ -12,15 +12,15 @@
   = form_for @drive do |f|
     #from
       = f.label 'z'
-      = text_field_tag :start_address, nil, {:id => 'start_addr'}
+      = text_field_tag :start_address, nil, {:id => 'start_addr', :autocomplete => :off}
     #through
       = f.label 'przez'
       = text_field_tag :through0, nil
-      %button{:type => "button", :id => "throughButton"} plus
+      %button{:type => "button", :id => "throughButton", :autocomplete => :off} plus
       %br/
     #to
       = f.label 'do'
-      = text_field_tag :destination_address, nil, {:id => 'dest_addr'}
+      = text_field_tag :destination_address, nil, {:id => 'dest_addr', :autocomplete => :off}
     #seats
       = f.label 'ilość miejsc:'
       = f.text_field :seats

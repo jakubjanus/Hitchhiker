@@ -42,7 +42,7 @@ class DrivesController < ApplicationController
       if drive.save
         flash[:notice] = "Pomyslnie dodano trase."
         add_mid_locations_to_drive(drive)
-        #redirect_to root_path
+        
         respond_to do |format|
           format.json do
             render :json => {:status => "redirect", :path => root_url}
