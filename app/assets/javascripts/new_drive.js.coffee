@@ -13,28 +13,32 @@ class ServerSide
   addLatLon: (@start, @throughs, @dest) =>
 
   submitDrive: =>
-    data = $('#new_drive').serializeArray()
-    data.push
-      name: "startLatLon"
-      value: @start.toJSON()
+    if @start && @dest
+      data = $('#new_drive').serializeArray()
+      data.push
+        name: "startLatLon"
+        value: @start.toJSON()
 
-    throughs = @throughs
-    tJSONArray = '{ "throughsLatLon" : ['
-    coma = ''
-    for through in throughs
-      tJSONArray = tJSONArray + coma + through.toJSON()
-      coma = ','
+      throughs = @throughs
+      tJSONArray = '{ "throughsLatLon" : ['
+      coma = ''
+      for through in throughs
+        tJSONArray = tJSONArray + coma + through.toJSON()
+        coma = ','
       
-    tJSONArray = tJSONArray + "] }"
-    data.push
-      name: "throughsLatLon"
-      value: tJSONArray
-    data.push
-      name: "destLatLon"
-      value: @dest.toJSON()
+      tJSONArray = tJSONArray + "] }"
+      data.push
+        name: "throughsLatLon"
+        value: tJSONArray
+      data.push
+        name: "destLatLon"
+        value: @dest.toJSON()
     
-    console.log data
-    $.post("#{@baseUrl}/drives", data)
+      $.post("#{@baseUrl}/drives", data, 
+      (data) ->
+        if data.status is "redirect"
+          window.location.href = data.path
+          )
 
 class MapView
   constructor: (@mapModel, @serverSide) ->
@@ -131,7 +135,6 @@ class Map
               map: map
               position: location
             )
-            #@startLatLon = new LatLon(location.lat(), location.lng())
           else
             alert "Błąd w przetwarzaniu danych: " + status + 'wartosc pola ' + @startAddField + ' to ' + startAddress
           
@@ -147,7 +150,6 @@ class Map
               map: map
               position: location
             )
-            #@destLatLon = new LatLon(location.lat(), location.lng())
           else
             alert "Błąd w przetwarzaniu danych: " + status
     
@@ -191,13 +193,8 @@ class Map
           location = results[0].geometry.location
           latlng.latitude = location.lat()
           latlng.longitude = location.lng()
-          #loc = location
-          #latlng = new LatLon(location.lat(), location.lng())
         else
           console.log "cos poszlo zle"
-    #console.log latlng
-    #console.log latlng.latitude
-    #console.log loc
     latlng
 
 $ ->
