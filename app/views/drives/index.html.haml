@@ -1,0 +1,33 @@
+- if @drives.length > 0
+  %h1 Dostępne przejazdy
+  %table.drives_index
+    %thead
+      %tr
+        %td miejsce startowe
+        %td miejsce docelowe
+        %td ilość wolnych miejsc
+        %td data wyjazdu
+        %td wystawiono przez
+        %td 
+        
+    %tbody
+      - @drives.each do |drive|
+        %tr
+          %td 
+            = drive.start_city.name
+          %td 
+            = drive.destination_city.name
+          %td
+            = drive.free_seats
+          %td
+            = drive.date
+          %td
+            = drive.user.name
+          %td
+            = link_to 'pokaż', drive
+            
+  = will_paginate @drives
+
+- else
+  %p
+    Brak dostępnych przejazdów

@@ -3,9 +3,15 @@ class DrivesController < ApplicationController
   
   before_filter :authenticate_user!, :only => [:create, :edit, :destroy]
   
-  def index
-    
+  def show
+    @drive = Drive.find(params[:id])
+    @throughs = @drive.mid_locations
   end
+  
+  def index
+    @drives = Drive.paginate :page => params[:page], :per_page => 10
+  end
+  
   def new
     if current_user
       @logged_in = true
@@ -59,10 +65,6 @@ class DrivesController < ApplicationController
       flash[:error] = "Brak wymaganych pol"
       render :new
     end
-  end
-  
-  def show
-    
   end
   
   private

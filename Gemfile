@@ -12,6 +12,7 @@ gem 'devise'
 gem 'hpricot'
 gem 'ruby_parser'
 gem 'json'
+gem 'will_paginate'
 
 # Gems used only for assets and not required
 # in production environments by default.

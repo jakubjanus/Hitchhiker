@@ -1,0 +1,43 @@
+- if @drive
+  
+  = content_for :javascripts_to_load do
+    = javascript_include_tag "http://maps.googleapis.com/maps/api/js?key=AIzaSyDa-llwFFalhiAG7hDfGYinRC5RohcfrBU&sensor=false"
+    = javascript_include_tag 'http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js'
+    = javascript_include_tag 'show_drive'
+  
+  .drives_show
+    %div
+      %span
+        Miejsce startowe:
+      %span
+        = @drive.start_city.name
+    - if @throughs
+      %div
+        Przez:
+        - @throughs.each do |through|
+          %div
+            = through.city.name
+            
+    %div
+      %span
+        Miejsce docelowe:
+      %span
+        = @drive.destination_city.name
+    %div
+      %span
+        Data wyjazdu:
+      %span
+        = @drive.date
+    %div
+      %span
+        Ilość wolnych miejsc:
+      %span
+        = @drive.free_seats
+      
+    %map_canvas{:style => "width:400px; height:400px;"}
+
+- else
+  
+  %h1 Błąd
+  %p
+    Nie znaleziono żądanego przejazdu.
