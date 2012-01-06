@@ -2,7 +2,6 @@
   
   = content_for :javascripts_to_load do
     = javascript_include_tag "http://maps.googleapis.com/maps/api/js?key=AIzaSyDa-llwFFalhiAG7hDfGYinRC5RohcfrBU&sensor=false"
-    = javascript_include_tag 'http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js'
     = javascript_include_tag 'show_drive'
   
   .drives_show
@@ -34,7 +33,7 @@
       %span
         = @drive.free_seats
       
-    %map_canvas{:style => "width:400px; height:400px;"}
+    #map_canvas{:style => "width:400px; height:400px;"}
 
 - else
   

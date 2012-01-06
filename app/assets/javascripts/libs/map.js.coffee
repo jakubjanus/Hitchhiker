@@ -41,7 +41,7 @@ class ServerSide
           )
 
 class MapView
-  constructor: (@mapModel, @serverSide) ->
+  constructor: ->
     latlng =  new google.maps.LatLng(52, 19)
     myOptions =
       zoom: 5,
@@ -50,11 +50,15 @@ class MapView
     @map = new google.maps.Map(document.getElementById("map_canvas"),myOptions)
     @directionsDisplay = new google.maps.DirectionsRenderer()
     @directionsDisplay.setMap(@map)
-    @throughCount = 0
     
   setDirections: (result) =>
     @directionsDisplay.setDirections(result)
-   
+    
+
+class DriveEventMenager
+  constructor : (@mapModel, @serverSide) ->
+    @throughCount = 0
+    
   throughPlus: =>
     @throughCount++
     id = 'through' + @throughCount
@@ -92,13 +96,12 @@ class MapView
     $('#'+buttonId).bind("autocompletechange", (ev) ->
       map.updateMap())
 
-
-class Map
+class NewDriveMapInitializator
   constructor: (@startAddField, @destAddField) ->
-    @throughCount = 0
     baseUrl = (/http:\/\/[a-z0-9]+([\-\.:]{1}[a-z0-9]+)*/.exec document.location.href)[0]
     @serverSide = new ServerSide(baseUrl)
-    @mapView = new MapView(@,@serverSide)
+    @mapView = new MapView()
+    @driveEM = new DriveEventMenager(@,@serverSide)
     @startLatLon
     @destLatLon
     @throughLatLon = []
@@ -107,13 +110,13 @@ class Map
       @geocoder = new google.maps.Geocoder()
       @directionsService = new google.maps.DirectionsService()
 
-      @mapView.addUpdateActionToElement('start_addr', @)
-      @mapView.addUpdateActionToElement('dest_addr', @)
-      @mapView.addUpdateActionToElement('through0', @)
+      @driveEM.addUpdateActionToElement('start_addr', @)
+      @driveEM.addUpdateActionToElement('dest_addr', @)
+      @driveEM.addUpdateActionToElement('through0', @)
     
-      @mapView.addAutocompletionToElement('start_addr')
-      @mapView.addAutocompletionToElement('dest_addr')
-      @mapView.addAutocompletionToElement('through0')     
+      @driveEM.addAutocompletionToElement('start_addr')
+      @driveEM.addAutocompletionToElement('dest_addr')
+      @driveEM.addAutocompletionToElement('through0')     
       
       serverSide = @serverSide
       $('#new_drive').submit (event) ->
@@ -156,7 +159,7 @@ class Map
             alert "Błąd w przetwarzaniu danych: " + status
     
     if startAddress isnt "" and destAddress isnt ""
-      waypoints = @mapView.getWaypoints()
+      waypoints = @driveEM.getWaypoints()
       mapView = @mapView
       serverSide = @serverSide
       geocoder = @geocoder
@@ -200,6 +203,5 @@ class Map
     latlng
     
 window.LatLon = LatLon
-window.ServerSide = ServerSide
 window.MapView = MapView
-window.Map = Map
+window.NewDriveMapInitializator = NewDriveMapInitializator
