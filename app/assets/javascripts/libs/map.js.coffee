@@ -203,20 +203,6 @@ class NewDriveMapInitializator
           else
             alert "Błąd w przetwarzaniu danych: " + status
   
-  checkWaypoints: (waypoints) =>
-    console.log "check ya"
-    cond = true
-    for waypoint in waypoints
-      @geocoder.geocode
-        address: waypoint.location,
-        (results, status) ->
-           unless status is google.maps.GeocoderStatus.OK
-             cond = false
-             dv = new DialogView()
-             dv.showCityNotFoundDialog(waypoint.location)
-    console.log cond
-    cond
-  
   getLatLngsFromWaypoints: (waypoints) =>
     latlngs = []
     geocoder = @geocoder
