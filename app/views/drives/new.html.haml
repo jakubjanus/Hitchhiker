@@ -7,34 +7,41 @@
 
   %h1 Dodaj nową trasę
   
-  = form_for @drive do |f|
-    #from
-      = f.label 'z'
-      = text_field_tag :start_address, nil, {:id => 'start_addr', :autocomplete => :off}
-    #through
-      = f.label 'przez'
-      = text_field_tag :through0, nil
-      %button{:type => "button", :id => "throughButton", :autocomplete => :off} plus
-      %br/
-    #to
-      = f.label 'do'
-      = text_field_tag :destination_address, nil, {:id => 'dest_addr', :autocomplete => :off}
-    #seats
-      = f.label 'ilość miejsc:'
-      = f.text_field :seats
-    #date_picker
-      = f.label 'data wyjazdu:'
-      = f.date_select :date
-    #submit
-      = f.submit 'dodaj trasę'
+  %div
+    = form_for @drive do |f|
+      #from
+        = f.label 'z'
+        %br/
+        = text_field_tag :start_address, nil, {:id => 'start_addr', :autocomplete => :off}
+      #through
+        = f.label 'przez'
+        %br/
+        = text_field_tag :through0, nil
+        %button{:type => "button", :id => "throughButton", :autocomplete => :off} plus
+        %br/
+      #to
+        = f.label 'do'
+        %br/
+        = text_field_tag :destination_address, nil, {:id => 'dest_addr', :autocomplete => :off}
+      #seats
+        = f.label 'ilość miejsc:'
+        %br/
+        = f.text_field :seats, :size => 3
+      #date_picker
+        = f.label 'data wyjazdu:'
+        %br/
+        = f.date_select :date
+      #submit
+        = f.submit 'dodaj trasę'
 
-  #map_canvas{:style => "width:400px; height:400px;"}
+
+  #map_canvas{:style => "width:350px; height:350px; float: right; position: absolute; left: 350px; top: 50px;"}
     
 - else
   %p
-    Aby kontunuować musisz być zalogowany.
+    Aby kontunuować musisz być zalogowany. 
+    = link_to 'zaloguj się', new_user_session_path
   %p
     Jeśli nie masz konta, możesz się 
     = link_to 'zarejestrować.', new_user_registration_path
 
-  = render "shared/login_panel"

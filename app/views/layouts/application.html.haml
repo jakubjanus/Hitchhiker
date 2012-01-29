@@ -10,19 +10,20 @@
   
   %body
     
-    = render 'shared/app_menu'
+    = render 'shared/login_panel'
     
-    - if flash[:notice]
-      .notice
-        = flash[:notice]
-        = yield :notice
-    - if flash[:error]
-      .error
-        = flash[:error]
-        = yield :error
+    #menu
+      = render 'shared/app_menu'
+    
+    #content
+      - if flash[:notice]
+        .notice
+          = flash[:notice]
+          = yield :notice
+      - if flash[:error]
+        .error
+          = flash[:error]
+          = yield :error
 
-    = yield
-    
-    - if current_user
-      = link_to 'wyloguj', destroy_user_session_path, :method => :delete
+      = yield
 

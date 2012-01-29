@@ -3,6 +3,21 @@ class LatLon
 
   toJSON: =>
     res = '{ "latitude": "' + @latitude + '" , "longitude": "' + @longitude + '"}'
+
+class DialogView
+  constructor: ->
+    
+  showCityNotFoundDialog: (city) =>
+    dialog = '<div id="CNFdialog" title="Błąd"><p>Nie znaleziono miasta: ' + city +
+      '. Proszę spróbuj jeszcze raz.'+ '</p></div>'
+    $('#content').append(dialog)
+    options =
+      modal: true,
+      buttons:
+        ok:
+          () ->
+            $(@).dialog("close")
+    $('#CNFdialog').dialog(options)
   
 class ServerSide
   constructor: (@baseUrl) ->
@@ -64,10 +79,8 @@ class DriveEventMenager
     id = 'through' + @throughCount
     $('#through').append '<input id="'+id+'" name="' + id + '" type="text" autocomplete="off"/><br/>'
     @addAutocompletionToElement(id)
-    mapModel = @mapModel
-    $('#'+id).change (ev) ->
-      mapModel.updateMap()
-      
+    @.addUpdateActionToElement(id, @mapModel)
+  
   addAutocompletionToElement: (inputTextId) =>
     serverSide = @serverSide
     $('#'+inputTextId).keyup ->
@@ -91,10 +104,18 @@ class DriveEventMenager
     waypoints
       
   addUpdateActionToElement: (buttonId,map) =>
-    $('#'+buttonId).change (ev) ->
-      map.updateMap()
     $('#'+buttonId).bind("autocompletechange", (ev) ->
-      map.updateMap())
+      map.geocoder.geocode
+        address: $('#'+buttonId).val()
+        (result, status) ->
+          if status is google.maps.GeocoderStatus.OK
+            map.updateMap()
+          else
+            dv = new DialogView()
+            dv.showCityNotFoundDialog($('#'+buttonId).val())
+            )
+      #map.updateMap())
+      
 
 class NewDriveMapInitializator
   constructor: (@startAddField, @destAddField) ->
@@ -141,7 +162,8 @@ class NewDriveMapInitializator
               position: location
             )
           else
-            alert "Błąd w przetwarzaniu danych: " + status + 'wartosc pola ' + @startAddField + ' to ' + startAddress
+            #dv = new DialogView()
+            #dv.showCityNotFoundDialog(startAddress)
           
     unless destAddress is ""
       @geocoder.geocode
@@ -156,9 +178,10 @@ class NewDriveMapInitializator
               position: location
             )
           else
-            alert "Błąd w przetwarzaniu danych: " + status
+            #dv = new DialogView()
+            #dv.showCityNotFoundDialog(destAddress)
     
-    if startAddress isnt "" and destAddress isnt ""
+    if startAddress isnt "" and destAddress isnt "" #and @.checkWaypoints(@driveEM.getWaypoints())
       waypoints = @driveEM.getWaypoints()
       mapView = @mapView
       serverSide = @serverSide
@@ -179,6 +202,20 @@ class NewDriveMapInitializator
             serverSide.addLatLon(start, throughs, dest)
           else
             alert "Błąd w przetwarzaniu danych: " + status
+  
+  checkWaypoints: (waypoints) =>
+    console.log "check ya"
+    cond = true
+    for waypoint in waypoints
+      @geocoder.geocode
+        address: waypoint.location,
+        (results, status) ->
+           unless status is google.maps.GeocoderStatus.OK
+             cond = false
+             dv = new DialogView()
+             dv.showCityNotFoundDialog(waypoint.location)
+    console.log cond
+    cond
   
   getLatLngsFromWaypoints: (waypoints) =>
     latlngs = []

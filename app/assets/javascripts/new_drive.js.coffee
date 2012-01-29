@@ -4,4 +4,4 @@ $ ->
   $('#through0').change(mapV.updateMap())
   $('#throughButton').click (ev) ->
     ev.stopImmediatePropagation()
-    mapV.mapView.throughPlus()
+    mapV.driveEM.throughPlus()
