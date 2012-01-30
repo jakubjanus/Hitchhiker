@@ -1,12 +1,17 @@
 pl:
   errors:
     messages:
+      expired: "wygasło, zażądaj nowego"
       not_found: "nie znaleziono"
       already_confirmed: "już został aktywowany"
       not_locked: "nie był zablokowany"
+      not_saved:
+        one: "1 błąd nie pozwolił zapisać %{resource}"
+        other: "%{count} błędów nie pozwoliło zapisać %{resource}"
 
   devise:
     failure:
+      already_authenticated: 'Już jesteś zalogowany.'
       unauthenticated: 'Musisz się zalogować lub zarejestrować aby kontynuować.'
       unconfirmed: 'Musisz najpierw aktywować swoje konto aby kontynuować.'
       locked: 'Twoje konto jest zablokowane.'
@@ -20,16 +25,28 @@ pl:
     passwords:
       send_instructions: 'Wkrótce powinieneś otrzymać email z instrukcją jak ustawić nowe hasło.'
       updated: 'Twoje hasło zostało zmienione. Jesteś już zalogowany.'
+      updated_not_active: 'Hasło zostało zmienione pomyślnie'
+      send_paranoid_instructions: "Na twój adres email został wysłany link aktywujący hasło."
     confirmations:
       send_instructions: 'Wkrótce powinieneś otrzymać email z instrukcją jak aktywować swoje konto.'
       confirmed: 'Twoje konto zostało aktywowane. Jesteś już zalogowany.'
+      send_paranoid_instructions: 'Jeśli twój email jest w bazie danych, to wkrótce otrzymasz instrukcje jak aktywować swoje konto.'
     registrations:
       signed_up: 'Rejestracja zakończyła się sukcesem. Link aktywacyjny został wysłany na twój adres e-mail (jeśli włączone).'
       updated: 'Twoje konto zostało pomyślnie zaktualizowane.'
+      inactive_signed_up: 'Rejestracja zakończyła się sukcesem. Jednak nie można było Cię zalogować, ponieważ twoje konto jest %{reason}.'
       destroyed: 'Papa! Twoje konto zostało usunięte. Mamy nadzieję, że spotkamy się jeszcze kiedyś!'
+      reasons:
+        inactive: 'nieaktywne'
+        unconfirmed: 'niepotwierdzone'
+        locked: 'zablokowane'
     unlocks:
       send_instructions: 'Wkrótce powinieneś otrzymać email z instrukcją jak odblokować swoje konto.'
+      send_paranoid_instructions: 'Jeśli twój email jest w bazie danych, to wkrótce otrzymasz email z instrukcją jak odblokować swoje konto.'
       unlocked: 'Twoje konto zostało odblokowane. Jesteś już zalogowany.'
+    omniauth_callbacks:
+      success: 'Pomyślnie zalogowany za pomocą konta %{kind}.'
+      failure: 'Nie można było zalogować za pomocą %{kind} ponieważ "%{reason}".'
     mailer:
       confirmation_instructions:
         subject: 'Instrukcja aktywacji konta'

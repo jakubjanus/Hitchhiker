@@ -4,21 +4,48 @@ class LatLon
   toJSON: =>
     res = '{ "latitude": "' + @latitude + '" , "longitude": "' + @longitude + '"}'
 
-class DialogView
+class UserValidation
   constructor: ->
+  
+  addFormValidationToElement: (buttonId) =>
+    thisVal = @
+    $('#'+buttonId).click((ev) ->
+      validation = thisVal.validateForm()
+      unless validation.cond
+        thisVal.showDialog("Błąd walidacji",validation.msg + 'Proszę wypełnij powyższe pola.',true)
+        ev.preventDefault()
+      )
+  
+  validateForm: =>
+    cond = true
+    msg =""
+    inputs = ['start_addr', 'dest_addr', 'seats', 'date']
+    names = {'start_addr':'adres startowy', 'dest_addr':'adres docelowy', 'seats':'liczba miejsc', 'date':'data'}
+    for input in inputs
+      if @.validatePresence(input)
+        cond = false
+        msg += 'Pole ' + names[input] + ' jest wymagane.<br/>'
+    result=
+      cond: cond
+      msg: msg
+      
+  validatePresence: (elementId) =>
+    $('#'+elementId).val() is ""
     
-  showCityNotFoundDialog: (city) =>
-    dialog = '<div id="CNFdialog" title="Błąd"><p>Nie znaleziono miasta: ' + city +
-      '. Proszę spróbuj jeszcze raz.'+ '</p></div>'
+  showDialog: (title, msg, modal) =>
+    dialog = '<div id="CNFdialog" title="' + title + '"<p>' + msg + '</p></div>'
     $('#content').append(dialog)
     options =
-      modal: true,
+      modal: modal,
       buttons:
         ok:
           () ->
             $(@).dialog("close")
     $('#CNFdialog').dialog(options)
-  
+    
+  showCityNotFoundDialog: (city) =>
+    @.showDialog("Błąd","Nie znaleziono miasta: " + city + ". Proszę spróbuj ponownie.",true)
+
 class ServerSide
   constructor: (@baseUrl) ->
     
@@ -80,6 +107,13 @@ class DriveEventMenager
     $('#through').append '<input id="'+id+'" name="' + id + '" type="text" autocomplete="off"/><br/>'
     @addAutocompletionToElement(id)
     @.addUpdateActionToElement(id, @mapModel)
+    
+  addDatePickerToElement: (elementId) =>
+    $('#'+elementId).datepicker({monthNames: ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 
+      'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień']
+      , dayNamesMin: ['Pn', 'Wt', 'Śr', 'Czw', 'Pt', 'So', 'Nd']
+      , dateFormat: 'dd-mm-yy'
+      , minDate: 0})
   
   addAutocompletionToElement: (inputTextId) =>
     serverSide = @serverSide
@@ -105,16 +139,16 @@ class DriveEventMenager
       
   addUpdateActionToElement: (buttonId,map) =>
     $('#'+buttonId).bind("autocompletechange", (ev) ->
-      map.geocoder.geocode
-        address: $('#'+buttonId).val()
-        (result, status) ->
-          if status is google.maps.GeocoderStatus.OK
-            map.updateMap()
-          else
-            dv = new DialogView()
-            dv.showCityNotFoundDialog($('#'+buttonId).val())
-            )
-      #map.updateMap())
+      if $('#'+buttonId).val() isnt ""
+        map.geocoder.geocode
+          address: $('#'+buttonId).val()
+          (result, status) ->
+            if status is google.maps.GeocoderStatus.OK
+              map.updateMap()
+            else
+              dv = new UserValidation()
+              dv.showCityNotFoundDialog($('#'+buttonId).val())
+    )
       
 
 class NewDriveMapInitializator
@@ -123,6 +157,7 @@ class NewDriveMapInitializator
     @serverSide = new ServerSide(baseUrl)
     @mapView = new MapView()
     @driveEM = new DriveEventMenager(@,@serverSide)
+    @userValidation = new UserValidation()
     @startLatLon
     @destLatLon
     @throughLatLon = []
@@ -137,7 +172,11 @@ class NewDriveMapInitializator
     
       @driveEM.addAutocompletionToElement('start_addr')
       @driveEM.addAutocompletionToElement('dest_addr')
-      @driveEM.addAutocompletionToElement('through0')     
+      @driveEM.addAutocompletionToElement('through0')    
+      
+      @driveEM.addDatePickerToElement('date') 
+      
+      @userValidation.addFormValidationToElement('submitButton')
       
       serverSide = @serverSide
       $('#new_drive').submit (event) ->
@@ -162,7 +201,7 @@ class NewDriveMapInitializator
               position: location
             )
           else
-            #dv = new DialogView()
+            #dv = new UserValidation()
             #dv.showCityNotFoundDialog(startAddress)
           
     unless destAddress is ""
@@ -178,7 +217,7 @@ class NewDriveMapInitializator
               position: location
             )
           else
-            #dv = new DialogView()
+            #dv = new UserValidation()
             #dv.showCityNotFoundDialog(destAddress)
     
     if startAddress isnt "" and destAddress isnt "" #and @.checkWaypoints(@driveEM.getWaypoints())

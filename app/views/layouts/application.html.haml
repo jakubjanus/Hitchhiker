@@ -20,9 +20,10 @@
         .notice
           = flash[:notice]
           = yield :notice
-      - if flash[:error]
+      - if flash[:error] || flash[:alert]
+        - error_msg = flash[:error] || flash[:alert]
         .error
-          = flash[:error]
+          = error_msg
           = yield :error
 
       = yield
