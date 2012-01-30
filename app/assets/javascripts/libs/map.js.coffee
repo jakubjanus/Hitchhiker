@@ -19,18 +19,25 @@ class UserValidation
   validateForm: =>
     cond = true
     msg =""
-    inputs = ['start_addr', 'dest_addr', 'seats', 'date']
-    names = {'start_addr':'adres startowy', 'dest_addr':'adres docelowy', 'seats':'liczba miejsc', 'date':'data'}
+    inputs = ['start_addr', 'dest_addr', 'drive_seats', 'date']
+    names = {'start_addr':'adres startowy', 'dest_addr':'adres docelowy', 'drive_seats':'liczba miejsc', 'date':'data'}
     for input in inputs
-      if @.validatePresence(input)
+      unless @.validatePresence(input)
         cond = false
         msg += 'Pole ' + names[input] + ' jest wymagane.<br/>'
+    unless @.validateNumberFormat('drive_seats')
+      cond = false
+      msg += 'Pole ilość miejsc musi być liczbą większą lub równą 0.<br/>'
     result=
       cond: cond
       msg: msg
       
   validatePresence: (elementId) =>
-    $('#'+elementId).val() is ""
+    $('#'+elementId).val() isnt "" 
+    
+  validateNumberFormat: (elementId) =>
+    patt = /^(\d)+$/
+    patt.test($('#'+elementId).val())
     
   showDialog: (title, msg, modal) =>
     dialog = '<div id="CNFdialog" title="' + title + '"<p>' + msg + '</p></div>'
@@ -148,6 +155,7 @@ class DriveEventMenager
             else
               dv = new UserValidation()
               dv.showCityNotFoundDialog($('#'+buttonId).val())
+              $('#'+buttonId).val("")
     )
       
 

@@ -52,10 +52,10 @@ class DrivesController < ApplicationController
           :longitude => latlon['longitude'].to_f.round(3) })
       end
     
-      ddate = build_date_from_params("date", params[:drive])
+      #ddate = build_date_from_params("date", params[:drive])
       drive = Drive.new({:seats => params[:drive][:seats],
                         :free_seats => params[:drive][:seats],
-                        :date => ddate,
+                        :date => build_date(params),
                         :user_id => current_user.id,
                         :start_city_id => start_city.id,
                         :destination_city_id => destination_city.id
@@ -87,6 +87,15 @@ class DrivesController < ApplicationController
     Date.new(params["#{field_name.to_s}(1i)"].to_i, 
        params["#{field_name.to_s}(2i)"].to_i, 
        params["#{field_name.to_s}(3i)"].to_i)
+  end
+  
+  def build_date(params)
+    patt = /^(\d\d)-(\d\d)-(\d\d\d\d)$/
+    date = nil
+    if params[:date] =~ %r{(\d\d)-(\d\d)-(\d\d\d\d)}
+      date = Date.new($3.to_i,$2.to_i,$1.to_i)
+    end
+    date
   end
   
   def add_mid_locations_to_drive(drive)
