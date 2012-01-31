@@ -28,7 +28,18 @@ class DrivesController < ApplicationController
   end
   
   def search
+    start_latlon = ActiveSupport::JSON.decode(params[:start_location])
+    dest_latlon = ActiveSupport::JSON.decode(params[:dest_location])
     
+    start_city = City.findByName(params[:start_address]) || City.findByCoordinates(roundCoordinate(start_latlon['latitude']), roundCoordinate(start_latlon['longitude']))
+    dest_city = City.findByName(params[:dest_address]) || City.findByCoordinates(roundCoordinate(dest_latlon['latitude']), roundCoordinate(dest_latlon['longitude']))
+    
+    @drives = Drive.search(start_city, dest_city)
+    
+    puts "-------------------------- PARAMS ------------------------"
+    puts "start: " + params[:start_address] + ""
+    #puts start_city
+    puts dest_city.name
   end
   
   def searchSite
@@ -50,14 +61,14 @@ class DrivesController < ApplicationController
       start_city = City.findByName(params[:start_address])
       if start_city.nil?
         latlon = ActiveSupport::JSON.decode(params[:startLatLon])
-        start_city = City.create({:name => params[:start_address], :latitude => latlon['latitude'].to_f.round(3), 
-          :longitude => latlon['longitude'].to_f.round(3) })
+        start_city = City.create({:name => params[:start_address], :latitude => roundCoordinate(latlon['latitude']), 
+          :longitude => roundCoordinate(latlon['longitude']) })
       end
       destination_city = City.findByName(params[:destination_address])
       if destination_city.nil?
         latlon = ActiveSupport::JSON.decode(params[:startLatLon])
-        destination_city = City.create({:name => params[:destination_address], :latitude => latlon['latitude'].to_f.round(3), 
-          :longitude => latlon['longitude'].to_f.round(3) })
+        destination_city = City.create({:name => params[:destination_address], :latitude => roundCoordinate(latlon['latitude']), 
+          :longitude => roundCoordinate(latlon['longitude']) })
       end
     
       #ddate = build_date_from_params("date", params[:drive])
@@ -131,5 +142,9 @@ class DrivesController < ApplicationController
       cond = false
     end
     cond
+  end
+  
+  def roundCoordinate(coordinate)
+    coordinate.to_f.round(3)
   end
 end

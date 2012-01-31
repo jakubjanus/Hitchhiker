@@ -14,17 +14,12 @@ class ServerSide
   constructor: (@baseURL) ->
     
   submitSearch: (start_city, dest_city) =>
-    console.log "SUBMIT"
     if start_city.name and dest_city.name
       data = $('#search_drive').serializeArray()
-      data.push
-        name: 'start_location'
-        value: new LatLon(start_city.location.Oa, start_city.location.Pa).toJSON()
-      data.push
-        name: 'dest_location'
-        value: new LatLon(dest_city.location.Oa, dest_city.location.Pa).toJSON()
-      console.log data
-      console.log "#{@baseURL}/drives/search"
+      
+      data.push @.createLocationObject('start_location', start_city)
+      data.push @.createLocationObject('dest_location', dest_city)
+
       $.get("#{@baseURL}/drives/search", data, 
       (data) ->
         if data.status is "redirect"
@@ -32,6 +27,11 @@ class ServerSide
         else
           console.log data
           )
+          
+  createLocationObject: (name, city) =>
+    res=
+      name: name
+      value: new LatLon(city.location.Oa, city.location.Pa).toJSON()
 
 class SearchSiteEventMenager
   constructor: () ->
@@ -58,7 +58,6 @@ class SearchSiteEventMenager
       ev.preventDefault()
       if start_city.name and dest_city.name
         onLoad.call(@)
-        #console.log start_city.location.Oa
       else
         console.log "NIEEEEE"
   
