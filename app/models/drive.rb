@@ -10,6 +10,10 @@ class Drive < ActiveRecord::Base
   has_many :mid_locations, :dependent => :destroy
   has_many :cities, :through => :mid_locations, :dependent => :destroy
   
+  def self.search(start, destination)
+    
+  end
+  
   def drive_date_cannot_be_in_the_past
     if !date.blank? && date<Date.today
       errors.add :date, "drive date can't be in the past"

@@ -27,6 +27,14 @@ class DrivesController < ApplicationController
     @drives = Drive.paginate :page => params[:page], :per_page => 10
   end
   
+  def search
+    
+  end
+  
+  def searchSite
+    
+  end
+  
   def new
     if current_user
       @logged_in = true

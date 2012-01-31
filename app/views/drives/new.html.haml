@@ -30,7 +30,6 @@
       #date_picker
         = f.label 'data wyjazdu:'
         %br/
-        -#= f.date_select :date
         = text_field_tag :date, nil, {:id => 'date', :autocomplete => :off}
       #submit
         = f.submit 'dodaj trasę', {:id => 'submitButton'}

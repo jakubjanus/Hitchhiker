@@ -88,6 +88,7 @@ class ServerSide
         if data.status is "redirect"
           window.location.href = data.path
           )
+          
 
 class MapView
   constructor: ->
@@ -102,6 +103,12 @@ class MapView
     
   setDirections: (result) =>
     @directionsDisplay.setDirections(result)
+    
+  addMarker: (position) =>
+    option =
+      map: @map
+      position: position
+    marker = new google.maps.Marker(option)
     
 
 class DriveEventMenager
@@ -208,9 +215,6 @@ class NewDriveMapInitializator
               map: map
               position: location
             )
-          else
-            #dv = new UserValidation()
-            #dv.showCityNotFoundDialog(startAddress)
           
     unless destAddress is ""
       @geocoder.geocode
@@ -224,11 +228,8 @@ class NewDriveMapInitializator
               map: map
               position: location
             )
-          else
-            #dv = new UserValidation()
-            #dv.showCityNotFoundDialog(destAddress)
     
-    if startAddress isnt "" and destAddress isnt "" #and @.checkWaypoints(@driveEM.getWaypoints())
+    if startAddress isnt "" and destAddress isnt "" 
       waypoints = @driveEM.getWaypoints()
       mapView = @mapView
       serverSide = @serverSide
@@ -275,3 +276,4 @@ class NewDriveMapInitializator
 window.LatLon = LatLon
 window.MapView = MapView
 window.NewDriveMapInitializator = NewDriveMapInitializator
+window.UserValidation = UserValidation

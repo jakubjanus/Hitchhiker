@@ -1,4 +1,4 @@
-class ServerSide
+class SD_ServerSide
   constructor: (@baseUrl) ->
     
   getDriveData: (onLoad) =>
@@ -11,7 +11,7 @@ class ShowDriveMapInitializator
     @mapView = new MapView()
     @geocoder = new google.maps.Geocoder()
     @directionService = new google.maps.DirectionsService()
-    @serverSide = new ServerSide(document.location.href)
+    @serverSide = new SD_ServerSide(document.location.href)
     directionService = @directionService
     mapView = @mapView
     mapInit = @
