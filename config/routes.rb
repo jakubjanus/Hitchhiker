@@ -3,11 +3,11 @@ Hitchhiker::Application.routes.draw do
 
   get "home/index"
 
-  #devise_for :users
   resources :drives do
     collection do
       get 'search'
       get 'searchSite'
+      get 'searchResults'
     end
   end
   resources :cities do

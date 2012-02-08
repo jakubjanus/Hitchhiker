@@ -28,8 +28,11 @@ class DrivesController < ApplicationController
   end
   
   def search
+    puts "-------start latlon"
+    puts params[:start_address]
     start_latlon = ActiveSupport::JSON.decode(params[:start_location])
     dest_latlon = ActiveSupport::JSON.decode(params[:dest_location])
+    puts start_latlon
     
     start_city = City.findByName(params[:start_address]) || City.findByCoordinates(roundCoordinate(start_latlon['latitude']), roundCoordinate(start_latlon['longitude']))
     dest_city = City.findByName(params[:dest_address]) || City.findByCoordinates(roundCoordinate(dest_latlon['latitude']), roundCoordinate(dest_latlon['longitude']))
@@ -40,9 +43,19 @@ class DrivesController < ApplicationController
     puts "start: " + params[:start_address] + ""
     #puts start_city
     puts dest_city.name
+    
+    #redirect_to searchResults_drives_path, :results => ActiveSupport::JSON.encode(@drives)
+    respond_to do |format|
+      format.json do
+        render :json => ActiveSupport::JSON.encode(@drives)
+      end
+    end
   end
   
   def searchSite
+  end
+  
+  def searhResults
     
   end
   
@@ -71,7 +84,6 @@ class DrivesController < ApplicationController
           :longitude => roundCoordinate(latlon['longitude']) })
       end
     
-      #ddate = build_date_from_params("date", params[:drive])
       drive = Drive.new({:seats => params[:drive][:seats],
                         :free_seats => params[:drive][:seats],
                         :date => build_date(params),
@@ -101,13 +113,7 @@ class DrivesController < ApplicationController
     end
   end
   
-  private
-  def build_date_from_params(field_name, params)
-    Date.new(params["#{field_name.to_s}(1i)"].to_i, 
-       params["#{field_name.to_s}(2i)"].to_i, 
-       params["#{field_name.to_s}(3i)"].to_i)
-  end
-  
+  private  
   def build_date(params)
     patt = /^(\d\d)-(\d\d)-(\d\d\d\d)$/
     date = nil
