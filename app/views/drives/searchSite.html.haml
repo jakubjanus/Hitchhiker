@@ -4,17 +4,18 @@
   = javascript_include_tag 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js'
   = javascript_include_tag 'search_drive'
 
-%h1 Wyszukaj trasę
-%div
-  = form_tag({:controller => 'drives', :action => 'search'}, :method => 'get', :id => 'search_drive') do
-    = label_tag :z
-    %br/
-    = text_field_tag :start_address, nil, {:autocomplete => :off}
-    %br/
-    = label_tag :do
-    %br/
-    = text_field_tag :dest_address, nil, {:autocomplete => :off}
-    %br/
-    = submit_tag 'szukaj', {:id => 'search_submit'}
+#searchContents
+  %h1 Wyszukaj trasę
+  %div
+    = form_tag({:controller => 'drives', :action => 'search'}, :method => 'get', :id => 'search_drive') do
+      = label_tag :z
+      %br/
+      = text_field_tag :start_address, nil, {:autocomplete => :off}
+      %br/
+      = label_tag :do
+      %br/
+      = text_field_tag :dest_address, nil, {:autocomplete => :off}
+      %br/
+      = submit_tag 'szukaj', {:id => 'search_submit'}
     
-#map_canvas{:style => "width:350px; height:350px; float: right; position: absolute; left: 350px; top: 50px;"}
+  #map_canvas{:style => "width:350px; height:350px; float: right; position: absolute; left: 350px; top: 50px;"}

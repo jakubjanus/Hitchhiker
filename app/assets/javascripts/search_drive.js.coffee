@@ -25,7 +25,8 @@ class ServerSide
         if data.status is "redirect"
           window.location.href = data.path
         else
-          console.log data
+          resultsView = new SearchResultsView(data)
+          resultsView.setView('searchContents')
           )
           
   createLocationObject: (name, city) =>
@@ -60,7 +61,7 @@ class SearchSiteEventMenager
       if start_city.name and dest_city.name
         onLoad.call(@)
       else
-        console.log "NIEEEEE"
+        new UserValidation().showDialog("Błąd", "Wprowadź nazwę miejscowości startowej oraz docelowej.", true)
   
 
 class SearchDriveInitializator

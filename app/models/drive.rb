@@ -11,7 +11,13 @@ class Drive < ActiveRecord::Base
   has_many :cities, :through => :mid_locations, :dependent => :destroy
   
   def Drive.search(start, destination)
-    Drive.where(:start_city_id => start.id, :destination_city_id => destination.id) + Drive.findByMidLocs(start, destination)
+    (Drive.where(:start_city_id => start.id, :destination_city_id => destination.id) + 
+      Drive.findByMidLocs(start, destination)).uniq
+  end
+  
+  def get_info_json
+    {:id => self.id, :date => self.date, :free_seats => self.free_seats, :is_up_to_date => self.is_up_to_date, 
+      :start_city => self.start_city.name, :destination_city => self.destination_city.name}
   end
   
   def drive_date_cannot_be_in_the_past
@@ -35,11 +41,10 @@ class Drive < ActiveRecord::Base
   
   private
   def Drive.findByMidLocs(start, dest)
-    Drive.find_by_sql("SELECT drives.*, sname.name, dname.name FROM drives JOIN mid_locations AS start 
-ON drives.id=start.drive_id 
-JOIN mid_locations AS dest ON drives.id=dest.drive_id JOIN cities AS sname 
-ON sname.id=start.city_id JOIN cities AS dname ON dname.id=dest.city_id
-WHERE start.order<dest.order AND (sname.id=" + start.id.to_s + " OR drives.start_city_id=" + start.id.to_s + ") 
-AND (dname.id=" + dest.id.to_s + " OR drives.destination_city_id=" + dest.id.to_s + ");")
+    Drive.find_by_sql("SELECT DISTINCT drives.* FROM drives JOIN mid_locations AS start " + 
+      "ON drives.id=start.drive_id JOIN mid_locations AS dest ON drives.id=dest.drive_id JOIN cities AS sname " + 
+      "ON sname.id=start.city_id JOIN cities AS dname ON dname.id=dest.city_id " +
+      "WHERE start.order<dest.order AND (sname.id=" + start.id.to_s + " OR drives.start_city_id=" + start.id.to_s + 
+      ") AND (dname.id=" + dest.id.to_s + " OR drives.destination_city_id=" + dest.id.to_s + ");")
   end
 end

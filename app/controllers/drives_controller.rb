@@ -28,26 +28,20 @@ class DrivesController < ApplicationController
   end
   
   def search
-    puts "-------start latlon"
-    puts params[:start_address]
     start_latlon = ActiveSupport::JSON.decode(params[:start_location])
     dest_latlon = ActiveSupport::JSON.decode(params[:dest_location])
-    puts start_latlon
     
     start_city = City.findByName(params[:start_address]) || City.findByCoordinates(roundCoordinate(start_latlon['latitude']), roundCoordinate(start_latlon['longitude']))
     dest_city = City.findByName(params[:dest_address]) || City.findByCoordinates(roundCoordinate(dest_latlon['latitude']), roundCoordinate(dest_latlon['longitude']))
     
     @drives = Drive.search(start_city, dest_city)
+    @drives.collect! do |drive|
+      drive = drive.get_info_json
+    end
     
-    puts "-------------------------- PARAMS ------------------------"
-    puts "start: " + params[:start_address] + ""
-    #puts start_city
-    puts dest_city.name
-    
-    #redirect_to searchResults_drives_path, :results => ActiveSupport::JSON.encode(@drives)
     respond_to do |format|
       format.json do
-        render :json => ActiveSupport::JSON.encode(@drives)
+        render :json => @drives
       end
     end
   end
