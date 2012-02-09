@@ -22,12 +22,9 @@ class ServerSide
 
       $.get("#{@baseURL}/drives/search", data, 
       (data) ->
-        if data.status is "redirect"
-          window.location.href = data.path
-        else
-          resultsView = new SearchResultsView(data)
-          resultsView.setView('searchContents')
-          )
+        resultsView = new SearchResultsView(data)
+        resultsView.setView('searchContents')
+        )
           
   createLocationObject: (name, city) =>
     res=
@@ -37,15 +34,23 @@ class ServerSide
 
 class SearchSiteEventMenager
   constructor: () ->
+    @startMarker
+    @destinationMarker
   
-  addMarkerAdditionActionToElement: (elementId, map, city) =>
+  addMarkerAdditionActionToElement: (elementId, map, city, markerType) =>
+    if markerType == 'start'
+      marker = @startMarker
+    else
+      marker = @destinationMarker
     $('#'+elementId).bind("change", (ev) ->
       if $('#'+elementId).val() isnt ""
         map.geocoder.geocode
           address: $('#'+elementId).val(),
           (results, status) ->
             if status is google.maps.GeocoderStatus.OK
-              map.mapView.addMarker(results[0].geometry.location)
+              if marker 
+                marker.setMap null
+              marker = map.mapView.addMarker(results[0].geometry.location)
               city.setName($('#'+elementId).val())
               city.setLocation(results[0].geometry.location)
             else
@@ -73,8 +78,8 @@ class SearchDriveInitializator
     @eventMenager = new SearchSiteEventMenager()
     start_city = new City()
     dest_city = new City()
-    @eventMenager.addMarkerAdditionActionToElement('start_address', @, start_city)
-    @eventMenager.addMarkerAdditionActionToElement('dest_address', @, dest_city)
+    @eventMenager.addMarkerAdditionActionToElement('start_address', @, start_city, 'start')
+    @eventMenager.addMarkerAdditionActionToElement('dest_address', @, dest_city, 'destination')
     baseUrl = (/http:\/\/[a-z0-9]+([\-\.:]{1}[a-z0-9]+)*/.exec document.location.href)[0]
     serverSide = new ServerSide(baseUrl)
     @eventMenager.changeSubmitAction('search_submit', start_city, dest_city, ->
