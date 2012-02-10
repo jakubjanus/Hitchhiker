@@ -17,6 +17,22 @@ class Drive < ActiveRecord::Base
     end
   end
   
+  def Drive.search_up_to_date(start, destination)
+    if start and destination
+      res = Drive.search(start, destination)
+      i = 0
+      res.length.times  do
+        drive = res[i]
+        if drive.date<Date.today
+          res.delete(drive)
+        else
+          i += 1
+        end
+      end
+      res
+    end
+  end
+  
   def get_info_json
     {:id => self.id, :date => self.date, :free_seats => self.free_seats, :is_up_to_date => self.is_up_to_date, 
       :start_city => self.start_city.name, :destination_city => self.destination_city.name}

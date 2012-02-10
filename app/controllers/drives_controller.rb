@@ -34,7 +34,9 @@ class DrivesController < ApplicationController
     start_city = City.findByName(params[:start_address]) || City.findByCoordinates(roundCoordinate(start_latlon['latitude']), roundCoordinate(start_latlon['longitude']))
     dest_city = City.findByName(params[:dest_address]) || City.findByCoordinates(roundCoordinate(dest_latlon['latitude']), roundCoordinate(dest_latlon['longitude']))
     
-    @drives = Drive.search(start_city, dest_city)
+    @drives = Drive.search_up_to_date(start_city, dest_city)
+    puts "----------drives---------------------"
+    puts @drives
     if @drives
       @drives.collect! do |drive|
         drive = drive.get_info_json
@@ -49,10 +51,6 @@ class DrivesController < ApplicationController
   end
   
   def searchSite
-  end
-  
-  def searhResults
-    
   end
   
   def new
