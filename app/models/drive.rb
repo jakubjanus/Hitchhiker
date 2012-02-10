@@ -10,6 +10,7 @@ class Drive < ActiveRecord::Base
   has_many :mid_locations, :dependent => :destroy
   has_many :cities, :through => :mid_locations, :dependent => :destroy
   
+  
   def Drive.search(start, destination)
     if start and destination
       (Drive.where(:start_city_id => start.id, :destination_city_id => destination.id) + 
@@ -55,7 +56,7 @@ class Drive < ActiveRecord::Base
     mids.each do |mid|
       self.mid_locations.delete(mid)
     end
-  end
+  end  
   
   private
   def Drive.findByMidLocs(start, dest)

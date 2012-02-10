@@ -6,11 +6,20 @@ class City < ActiveRecord::Base
   has_many :mid_locations
   has_many :drives, :through => :mid_locations
   
+  after_initialize :round_coordinates
+  
   def City.findByCoordinates(lat,long)
     City.where({:longitude => long, :latitude => lat}).first
   end
   
   def City.findByName(name)
     City.where(:name => name).first
+  end
+  
+  def round_coordinates
+    if self.latitude and self.longitude
+      self.latitude = self.latitude.to_f.round(3)
+      self.longitude = self.longitude.to_f.round(3)
+    end
   end
 end
