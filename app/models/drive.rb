@@ -1,6 +1,6 @@
 class Drive < ActiveRecord::Base
   validates :start_city_id, :destination_city_id, :seats, :free_seats, 
-            :date, :is_up_to_date, :user, :presence => true
+            :date, :user, :presence => true
   validate :drive_date_cannot_be_in_the_past
   
   belongs_to :user
@@ -20,17 +20,7 @@ class Drive < ActiveRecord::Base
   
   def Drive.search_up_to_date(start, destination)
     if start and destination
-      res = Drive.search(start, destination)
-      i = 0
-      res.length.times  do
-        drive = res[i]
-        if drive.date<Date.today
-          res.delete(drive)
-        else
-          i += 1
-        end
-      end
-      res
+      Drive.get_up_to_date(Drive.search(start, destination))
     end
   end
   
@@ -58,6 +48,10 @@ class Drive < ActiveRecord::Base
     end
   end  
   
+  def is_up_to_date
+    self.date > Date.today
+  end
+  
   private
   def Drive.findByMidLocs(start, dest)
     Drive.find_by_sql("SELECT DISTINCT drives.* FROM drives JOIN mid_locations AS start " + 
@@ -66,5 +60,13 @@ class Drive < ActiveRecord::Base
       "WHERE (start.order<dest.order AND sname.id=" + start.id.to_s + " AND dname.id=" + dest.id.to_s +
       ") OR ( (sname.id=" + start.id.to_s + " OR drives.start_city_id=" + start.id.to_s + 
       ") AND (dname.id=" + dest.id.to_s + " OR drives.destination_city_id=" + dest.id.to_s + ") );")
+  end
+  
+  def Drive.get_up_to_date(drives)
+    res = []
+    for drive in drives
+      res << drive if drive.is_up_to_date
+    end
+    res
   end
 end

@@ -16,6 +16,7 @@ class City < ActiveRecord::Base
     City.where(:name => name).first
   end
   
+  private
   def round_coordinates
     if self.latitude and self.longitude
       self.latitude = self.latitude.to_f.round(3)
