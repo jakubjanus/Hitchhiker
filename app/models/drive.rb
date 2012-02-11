@@ -1,7 +1,8 @@
 class Drive < ActiveRecord::Base
   validates :start_city_id, :destination_city_id, :seats, :free_seats, 
             :date, :user, :presence => true
-  validate :drive_date_cannot_be_in_the_past
+  validate :drive_date_cannot_be_in_the_past, :cost_cant_be_negative, 
+           :distance_cant_be_negative, :free_seats_should_not_be_greater_then_seats
   
   belongs_to :user
   belongs_to :start_city, :class_name => "City", :foreign_key => "start_city_id"
@@ -27,12 +28,6 @@ class Drive < ActiveRecord::Base
   def get_info_json
     {:id => self.id, :date => self.date, :free_seats => self.free_seats, :is_up_to_date => self.is_up_to_date, 
       :start_city => self.start_city.name, :destination_city => self.destination_city.name}
-  end
-  
-  def drive_date_cannot_be_in_the_past
-    if !date.blank? && date<Date.today
-      errors.add :date, "drive date can't be in the past"
-    end
   end
     
   def add_mid_location(city)
@@ -68,5 +63,29 @@ class Drive < ActiveRecord::Base
       res << drive if drive.is_up_to_date
     end
     res
+  end
+  
+  def drive_date_cannot_be_in_the_past
+    if !date.blank? && date<Date.today
+      errors.add :date, "Drive date can't be in the past"
+    end
+  end
+  
+  def cost_cant_be_negative
+    if cost < 0
+      errors.add :cost, "Cost value can't be negative"
+    end
+  end
+  
+  def distance_cant_be_negative
+    if distance < 0
+      errors.add :distance, "Distance can't be negative"
+    end
+  end
+  
+  def free_seats_should_not_be_greater_then_seats
+    if seats < free_seats
+      errors.add :free_seats, "Number of free seats should not be greater then numeber of seats"
+    end
   end
 end

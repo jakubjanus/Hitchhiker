@@ -28,6 +28,9 @@ class UserValidation
     unless @.validateNumberFormat('drive_seats')
       cond = false
       msg += 'Pole ilość miejsc musi być liczbą większą lub równą 0.<br/>'
+    if $('#drive_cost').val() isnt "" and !@.validateNumberFormat('drive_cost')
+      cond = false
+      msg += 'Pole cena musi być liczbą większą równą 0.<br/>'
     result=
       cond: cond
       msg: msg
@@ -37,7 +40,7 @@ class UserValidation
     
   validateNumberFormat: (elementId) =>
     patt = /^(\d)+$/
-    patt.test($('#'+elementId).val())
+    patt.test($('#'+elementId).val()) 
     
   showDialog: (title, msg, modal) =>
     dialog = '<div id="CNFdialog" title="' + title + '"<p>' + msg + '</p></div>'

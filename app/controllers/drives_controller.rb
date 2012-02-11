@@ -76,13 +76,19 @@ class DrivesController < ApplicationController
         destination_city = City.create({:name => params[:destination_address], :latitude => roundCoordinate(latlon['latitude']), 
           :longitude => roundCoordinate(latlon['longitude']) })
       end
+      
+      cost_curr = get_cost_and_currency(params)
     
       drive = Drive.new({:seats => params[:drive][:seats],
                         :free_seats => params[:drive][:seats],
                         :date => build_date(params),
                         :user_id => current_user.id,
                         :start_city_id => start_city.id,
-                        :destination_city_id => destination_city.id
+                        :destination_city_id => destination_city.id,
+                        :comment => params[:comment],
+                        :distance => params[:distance],
+                        :cost => cost_curr[:cost],
+                        :currency => cost_curr[:currency]
         })
       if drive.save
         flash[:notice] = "Pomyslnie dodano trase."
@@ -114,6 +120,14 @@ class DrivesController < ApplicationController
       date = Date.new($3.to_i,$2.to_i,$1.to_i)
     end
     date
+  end
+  
+  def get_cost_and_currency(params)
+    cost = 0
+    currency = 'ns'
+    cost = params[:drive][:cost].to_f unless params[:drive][:cost].blank?
+    currency = params[:currency] if cost > 0
+    {:cost => cost, :currency => currency}
   end
   
   def add_mid_locations_to_drive(drive)

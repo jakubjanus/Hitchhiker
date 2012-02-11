@@ -31,6 +31,14 @@
         = f.label 'data wyjazdu:'
         %br/
         = text_field_tag :date, nil, {:id => 'date', :autocomplete => :off}
+      #comment
+        = f.label 'komentarz:'
+        %br/
+        = text_area_tag :comment, nil, {:id => 'comment', :rows => 7, :cols => 20}
+      #price
+        = f.label 'cena'
+        = f.text_field :cost, :size => 3
+        = select_tag :currency, options_for_select([['PLN', 'pln'], ['EUR', 'eur'], ['USD', 'usd']]), {:id => 'currency'}
       #submit
         = f.submit 'dodaj trasę', {:id => 'submitButton'}
 
