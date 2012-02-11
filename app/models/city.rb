@@ -22,5 +22,7 @@ class City < ActiveRecord::Base
       self.latitude = self.latitude.to_f.round(3)
       self.longitude = self.longitude.to_f.round(3)
     end
+  rescue ActiveModel::MissingAttributeError
+    
   end
 end

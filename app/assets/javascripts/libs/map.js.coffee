@@ -59,7 +59,7 @@ class ServerSide
   loadCities: (name,onLoad) =>
     $.getJSON("#{@baseUrl}/cities/getMatchedCities?name=#{name}", {}, onLoad)
     
-  addLatLon: (@start, @throughs, @dest) =>
+  addLatLon: (@start, @throughs, @dest, @distance) =>
 
   submitDrive: =>
     if @start && @dest
@@ -82,6 +82,9 @@ class ServerSide
       data.push
         name: "destLatLon"
         value: @dest.toJSON()
+      data.push
+        name: "distance"
+        value: @distance
     
       $.post("#{@baseUrl}/drives", data, 
       (data) ->
@@ -242,14 +245,24 @@ class NewDriveMapInitializator
         travelMode: google.maps.TravelMode.DRIVING
       @directionsService.route request,
         (result, status) ->
+          #console.log result
           if status is google.maps.DirectionsStatus.OK
             mapView.setDirections(result)
             throughs = mapM.getLatLngsFromWaypoints(waypoints)
             start = mapM.getLatLngFromCity(startAddress)
             dest = mapM.getLatLngFromCity(destAddress)
-            serverSide.addLatLon(start, throughs, dest)
+            distance = mapM.getDistance(result.routes[0].legs)
+            #console.log legs
+            console.log distance
+            serverSide.addLatLon(start, throughs, dest, distance)
           else
             alert "Błąd w przetwarzaniu danych: " + status
+  
+  getDistance: (legs) =>
+    distance = 0
+    for leg in legs
+      distance = distance + leg.distance.value
+    distance
   
   getLatLngsFromWaypoints: (waypoints) =>
     latlngs = []
