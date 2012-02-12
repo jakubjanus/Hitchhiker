@@ -1,7 +1,7 @@
  # -*- coding: utf-8 -*-
 class DrivesController < ApplicationController
   
-  before_filter :authenticate_user!, :only => [:create, :edit, :destroy]
+  before_filter :authenticate_user!, :only => [:create, :edit, :destroy, :edit, :destroy]
   
   def show
     @drive = Drive.find(params[:id])
@@ -14,9 +14,9 @@ class DrivesController < ApplicationController
     end
     
     respond_to do |format|
-      format.json do
-        render :json => {:start_add => start_add, :destination_add => dest_add, :throughs => throughs_adds}
-      end
+      #format.json do
+        #render :json => {:start_add => start_add, :destination_add => dest_add, :throughs => throughs_adds}
+      #end
       format.html do
         render 'show'
       end
@@ -60,6 +60,11 @@ class DrivesController < ApplicationController
     else
       @logged_in = false
     end
+  end
+  
+  def edit
+    @drive = Drive.find(params[:id])
+    
   end
   
   def create
@@ -110,6 +115,17 @@ class DrivesController < ApplicationController
       flash[:error] = "Brak wymaganych pol"
       render :new
     end
+  end
+  
+  def destroy
+    @drive = Drive.find(params[:id])
+    if @drive.user.id == current_user.id
+      @drive.destroy
+      flash[:notice] = 'Pomyślnie usunięto przejazd.'
+    else
+      flash[:error] = 'Możesz usuwać tylko swoje przejazdy.'
+    end
+    redirect_to root_path
   end
   
   private  

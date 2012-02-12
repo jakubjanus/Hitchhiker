@@ -4,7 +4,7 @@ class Drive < ActiveRecord::Base
   validate :drive_date_cannot_be_in_the_past, :cost_cant_be_negative, 
            :distance_cant_be_negative, :free_seats_should_not_be_greater_then_seats
   
-  belongs_to :user
+  belongs_to :user, :class_name => 'User', :foreign_key => 'user_id'
   belongs_to :start_city, :class_name => "City", :foreign_key => "start_city_id"
   belongs_to :destination_city, :class_name => "City", :foreign_key => "destination_city_id"
   

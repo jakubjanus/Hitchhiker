@@ -36,16 +36,8 @@ class HomeController < ApplicationController
           render :json => {:status => "redirect", :path => "/home/profil"}
         end
       end
-      #redirect_to '/home/profil'
     end
   end
 
-  private
-  def build_date(value)
-    date = nil
-    if value =~ %r{(\d\d)-(\d\d)-(\d\d\d\d)}
-      date = Date.new($3.to_i,$2.to_i,$1.to_i)
-    end
-    date
-  end
+ 
 end

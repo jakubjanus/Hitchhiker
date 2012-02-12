@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me, :name, :login
   attr_accessor :login
   
-  has_many :drives
+  has_many :drives, :class_name => 'Drive'
   
   belongs_to :hometown, :class_name => "City", :foreign_key => "hometown_id"
   
@@ -15,6 +15,22 @@ class User < ActiveRecord::Base
    conditions = warden_conditions.dup
    login = conditions.delete(:login)
    where(conditions).where(["lower(name) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+  end
+  
+  def get_up_to_date_drives
+    res = []
+    self.drives.each do |drive|
+      res << drive if drive.is_up_to_date
+    end
+    res
+  end
+  
+  def get_archival_drives
+    res = []
+    self.drives.each do |drive|
+      res << drive unless drive.is_up_to_date
+    end
+    res
   end
   
   def set_user_data(data)
