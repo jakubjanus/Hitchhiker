@@ -7,7 +7,7 @@ class SD_ServerSide
 class ShowDriveMapInitializator
   constructor: ->
   
-  initializeMap : =>
+  initializeMap: =>
     @mapView = new MapView()
     @geocoder = new google.maps.Geocoder()
     @directionService = new google.maps.DirectionsService()

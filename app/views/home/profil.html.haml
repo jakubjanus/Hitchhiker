@@ -1,0 +1,29 @@
+- if @user
+
+  = content_for :javascripts_to_load do
+    = stylesheet_link_tag 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css'
+    = javascript_include_tag 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js'
+    = javascript_include_tag 'profil'
+
+  #user_profile
+    %h1 
+      Użytkownik
+      = @user.name
+    #user_profile_tabs
+      %ul
+        %li
+          %a{:href => '#tab1'}
+            Dane osobowe
+        %li
+          %a{:href => '#tab2'}
+            Twoje przejazdy
+        %li
+          %a{:href => '#tab3'}
+            Wiadomości
+          
+      #tab1
+        = render 'shared/profile_user_data'
+      #tab2
+        TAB 2
+      #tab3
+        Wiadomosci

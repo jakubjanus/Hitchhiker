@@ -47,6 +47,10 @@ class Drive < ActiveRecord::Base
     self.date > Date.today
   end
   
+  def get_distance_in_km
+    self.distance / 1000 if self.distance
+  end
+  
   private
   def Drive.findByMidLocs(start, dest)
     Drive.find_by_sql("SELECT DISTINCT drives.* FROM drives JOIN mid_locations AS start " + 

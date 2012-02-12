@@ -4,6 +4,7 @@
     = javascript_include_tag "http://maps.googleapis.com/maps/api/js?key=AIzaSyDa-llwFFalhiAG7hDfGYinRC5RohcfrBU&sensor=false"
     = javascript_include_tag 'show_drive'
   
+  %h1 Dane przejazdu
   .drives_show
     %div
       %span
@@ -22,6 +23,29 @@
         Miejsce docelowe:
       %span
         = @drive.destination_city.name
+        
+    - if @drive.get_distance_in_km
+      %div
+        %span
+          Długość przejazdu:
+        %span
+          = @drive.get_distance_in_km
+          km
+          
+    - if @drive.comment
+      %div
+        %span
+          Komentarz:
+        %span
+          = @drive.comment
+          
+    - if @drive.cost
+      %div
+        %span
+          Cena:
+        %span
+          = @drive.cost
+          = @drive.currency
     %div
       %span
         Data wyjazdu:
@@ -33,7 +57,7 @@
       %span
         = @drive.free_seats
       
-    #map_canvas{:style => "width:400px; height:400px;"}
+  #map_canvas{:style => "width:350px; height:350px; float: right; position: absolute; left: 350px; top: 50px;"}
 
 - else
   

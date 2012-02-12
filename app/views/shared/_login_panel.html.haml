@@ -5,7 +5,7 @@
     - if current_user
       zalogowany jako
       %span#userName
-        = link_to current_user.name, ""
+        = link_to current_user.name, "/home/profil"
       = link_to 'wyloguj się', destroy_user_session_path, :method => :delete
     - else
       = link_to 'zaloguj się', new_user_session_path

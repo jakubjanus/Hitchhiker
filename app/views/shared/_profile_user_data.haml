@@ -1,0 +1,69 @@
+#user_data
+  
+  .info
+    %span
+      Login:
+    %span
+      = @user.name
+      
+  .info
+    %span
+      imię:
+    %span
+      - if @user.first_name
+        = @user.first_name
+      - else
+        brak danych
+        %button{:id => 'add_first_name'}
+    %span{:id => add_first_name_span}
+        
+  .info
+    %span
+      Nazwisko:
+    %span
+      - if @user.last_name
+        = @user.last_name
+      - else
+        brak danych
+        
+  .info
+    %span
+      Email:
+    %span
+      = @user.email
+     
+  .info
+    %span
+      Alternatywny email:
+    %span
+      - if @user.alt_email
+        = @user.alt_email
+      - else
+        brak danych
+        
+  .info
+    %span
+      Numer telefonu:
+    %span
+      - if @user.phone_number
+        = @user.phone_number
+      - else
+        brak danych
+        
+  .info
+    %span
+      Data urodzenia:
+    %span
+      - if @user.birthdate
+        = @user.birthdate
+      - else
+        brak danych
+        
+  .info
+    %span
+      Miasto:
+    %span
+      - if @user.hometown
+        = @user.hometown.name
+      - else
+        brak danych

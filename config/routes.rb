@@ -2,6 +2,7 @@ Hitchhiker::Application.routes.draw do
   devise_for :users
 
   get "home/index"
+  get "home/profil"
 
   resources :drives do
     collection do

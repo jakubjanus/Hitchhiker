@@ -114,7 +114,6 @@ class DrivesController < ApplicationController
   
   private  
   def build_date(params)
-    patt = /^(\d\d)-(\d\d)-(\d\d\d\d)$/
     date = nil
     if params[:date] =~ %r{(\d\d)-(\d\d)-(\d\d\d\d)}
       date = Date.new($3.to_i,$2.to_i,$1.to_i)
