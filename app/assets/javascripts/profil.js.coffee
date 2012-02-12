@@ -85,7 +85,7 @@ class ProfileView
     
 
 class ProfileEventMenager
-  constructor: (@serverSide, @view, @showEditViewButton, @backButton, @saveButton) ->
+  constructor: (@serverSide, @view, @showEditViewButton, @backButton, @saveButton, @dateInput) ->
   
   initialize : =>
     @.addSetInfoViewActionToElement()
@@ -112,6 +112,15 @@ class ProfileEventMenager
       th.view.setEditView()
       th.addSetInfoViewActionToElement()
       th.addSaveChangesActionToElement()
+      th.addDatePickerToElement()
+      
+  addDatePickerToElement: () =>
+    $('#'+@dateInput).datepicker({monthNames: ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 
+      'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień']
+      , dayNamesMin: ['Pn', 'Wt', 'Śr', 'Czw', 'Pt', 'So', 'Nd']
+      , dateFormat: 'dd-mm-yy'
+      , minDate: new Date(1900, 1 - 1, 1)
+      , changeYear: true})
 
 class ProfileInitializator
   constructor: () ->
@@ -127,7 +136,7 @@ class ProfileInitializator
     $('#edit_profile').button()
     profV = @profileView
 
-    @eventMenager = new ProfileEventMenager(@serverSide, @profileView, 'edit_profile', 'info_profile', 'save_profile')
+    @eventMenager = new ProfileEventMenager(@serverSide, @profileView, 'edit_profile', 'info_profile', 'save_profile', 'birthdate_value_input')
     @eventMenager.initialize()
     console.log @profileView
 

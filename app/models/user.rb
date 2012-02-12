@@ -23,10 +23,12 @@ class User < ActiveRecord::Base
     self.set_phone_number(data['phone_number']) if data["phone_number"]
     self.email = data['email'] if data['email'] and email_check(data['email'])
     self.alt_email = data['alt_email'] if data['alt_email'] and email_check(data['alt_email'])
-    self.save
-    # birthdate
-    # hometown
+    self.birthdate = build_date(data['birthdate']) if data['birthdate']
+    self.hometown = City.findOrCreate(data['hometown']) if data['hometown']
+    
     # and visibilities
+    
+    self.save
   end
   
   def set_hometown(city)
@@ -62,5 +64,13 @@ class User < ActiveRecord::Base
   
   def name_check(name)
     name =~ %r{^[(A-Z)|(a-z)]+$}
+  end
+  
+  def build_date(value)
+    date = nil
+    if value =~ %r{(\d\d)-(\d\d)-(\d\d\d\d)}
+      date = Date.new($3.to_i,$2.to_i,$1.to_i)
+    end
+    date
   end
 end
