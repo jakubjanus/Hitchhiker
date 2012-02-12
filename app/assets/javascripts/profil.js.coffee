@@ -1,5 +1,8 @@
 class ProfileEditValidator
   constructor: () ->
+  
+  validateForm: () =>
+    
     
   validateName: (name) =>
     (/^[(A-Z)|(a-z)]+$/).test(name)
@@ -58,9 +61,6 @@ class ProfileView
     
     $('#buttons_div').html(@.createButton('edit_profile', 'edytuj dane osobowe'))
     $('#edit_profile').button()
-    #th = @
-    #$('#edit_profile').click (ev) ->
-    #  th.setEditView()
     
   setEditView: =>
     @.addInput('first_name_value', @first_name)
@@ -74,12 +74,6 @@ class ProfileView
     $('#buttons_div').html(@.createButton('info_profile', 'powrót') + @.createButton('save_profile', 'zapisz'))
     $('#info_profile').button()
     $('#save_profile').button()
-    #th = @
-    #$('#info_profile').click (ev) ->
-    #  th.setInfoView()
-    #$('#save_profile').click (ev) ->
-    #  th.serverSide.changePersonalUserData (data) ->
-    #    console.log data
     
   addInput: (elementId, attr) =>
     $('#'+elementId).html('<input type="text" id="' + elementId + '_input" name="' + 
@@ -102,7 +96,9 @@ class ProfileEventMenager
     ss = @serverSide
     $('#'+@saveButton).click (ev) ->
       ss.changePersonalUserData (data) ->
-        console.log data
+        #console.log data
+        if data.status is "redirect"
+          window.location.href = data.path
   
   addSetInfoViewActionToElement: =>
     th = @
@@ -127,13 +123,10 @@ class ProfileInitializator
     @profileView = new ProfileView(@serverSide)
     @validator = new ProfileEditValidator()
    
-    #@profileView.setEditView()
-    #console.log @validator.validatePhoneNumber("-888-888-888")
     $('#user_profile_tabs').tabs()
     $('#edit_profile').button()
     profV = @profileView
-    #$('#edit_profile').click (ev) ->
-    #  profV.setEditView()
+
     @eventMenager = new ProfileEventMenager(@serverSide, @profileView, 'edit_profile', 'info_profile', 'save_profile')
     @eventMenager.initialize()
     console.log @profileView

@@ -18,11 +18,12 @@ class User < ActiveRecord::Base
   end
   
   def set_user_data(data)
-    self.first_name = data[:first_name] if data[:first_name]
-    self.last_name = data[:last_name] if data[:last_name]
-    self.set_phone_number(data[:phone_number]) if data[:phone_number]
-    self.email = data[:email] if data[:email] and email_check(data[:email])
-    self.alt_email = data[:alt_email] if data[:alt_email] and email_check(data[:alt_email])
+    self.first_name = data['first_name'] if data['first_name'] and name_check(data['first_name'])
+    self.last_name = data['last_name'] if data['last_name'] and name_check(data['last_name'])
+    self.set_phone_number(data['phone_number']) if data["phone_number"]
+    self.email = data['email'] if data['email'] and email_check(data['email'])
+    self.alt_email = data['alt_email'] if data['alt_email'] and email_check(data['alt_email'])
+    self.save
     # birthdate
     # hometown
     # and visibilities
@@ -57,5 +58,9 @@ class User < ActiveRecord::Base
   
   def email_check(email)
     email =~ %r{^[0-9a-z][0-9a-z.+]+[0-9a-z]@[0-9a-z][0-9a-z.-]+[0-9a-z]$}xi
+  end
+  
+  def name_check(name)
+    name =~ %r{^[(A-Z)|(a-z)]+$}
   end
 end
