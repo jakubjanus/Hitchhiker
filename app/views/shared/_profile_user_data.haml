@@ -3,24 +3,25 @@
   .info
     %span
       Login:
-    %span
+    %span{:id => 'name_value'}
       = @user.name
       
   .info
     %span
       imię:
-    %span
+    %span{:id => 'first_name_value'}
       - if @user.first_name
         = @user.first_name
       - else
         brak danych
-        %button{:id => 'add_first_name'}
-    %span{:id => add_first_name_span}
+        -# %button{:id => 'add_first_name'}
+        -#  wprowadź imię
+    %span{:id => 'add_first_name_span'}
         
   .info
     %span
       Nazwisko:
-    %span
+    %span{:id => 'last_name_value'}
       - if @user.last_name
         = @user.last_name
       - else
@@ -29,13 +30,13 @@
   .info
     %span
       Email:
-    %span
+    %span{:id => 'email_value'}
       = @user.email
      
   .info
     %span
       Alternatywny email:
-    %span
+    %span{:id => 'alt_email_value'}
       - if @user.alt_email
         = @user.alt_email
       - else
@@ -44,7 +45,7 @@
   .info
     %span
       Numer telefonu:
-    %span
+    %span{:id => 'phone_number_value'}
       - if @user.phone_number
         = @user.phone_number
       - else
@@ -53,7 +54,7 @@
   .info
     %span
       Data urodzenia:
-    %span
+    %span{:id => 'birthdate_value'}
       - if @user.birthdate
         = @user.birthdate
       - else
@@ -62,8 +63,12 @@
   .info
     %span
       Miasto:
-    %span
+    %span{:id => 'hometown_value'}
       - if @user.hometown
         = @user.hometown.name
       - else
         brak danych
+        
+  %div
+    %button{:id => 'edit_profile'}
+      edytuj dane osobowe
