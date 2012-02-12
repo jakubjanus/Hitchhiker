@@ -3,6 +3,8 @@ Hitchhiker::Application.routes.draw do
 
   get "home/index"
   get "home/profil"
+  
+  match 'home/profil/edit_user', :controller => 'home', :action => 'edit_user'
 
   resources :drives do
     collection do
