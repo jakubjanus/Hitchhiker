@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120212235654) do
+ActiveRecord::Schema.define(:version => 20120213021053) do
 
   create_table "cities", :force => true do |t|
     t.string   "name",       :null => false
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(:version => 20120212235654) do
     t.boolean  "is_read",      :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "owner_id"
   end
 
   create_table "mid_locations", :force => true do |t|

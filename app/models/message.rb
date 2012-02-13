@@ -3,6 +3,7 @@ class Message < ActiveRecord::Base
   
   belongs_to :sender, :class_name => 'User', :foreign_key => 'sender_id'
   belongs_to :recipient, :class_name => 'User', :foreign_key => 'recipient_id'
+  belongs_to :owner, :class_name => 'User', :foreign_key => 'owner_id'
   
   def read_message
     self.is_read = true

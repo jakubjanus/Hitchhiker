@@ -1,7 +1,7 @@
  # -*- coding: utf-8 -*-
 class MessagesController < ApplicationController
  
-  before_filter :authenticate_user!, :only => [:create, :show]
+  before_filter :authenticate_user!, :only => [:create, :show, :destroy]
   
   def show
     message = Message.find(params[:id])
@@ -30,6 +30,13 @@ class MessagesController < ApplicationController
         redirect_to root_path
       end
     end
+  end
+  
+  def destroy
+    #if current_user.id == Message.find(params[:id])
+    #else
+    #  flash[:error] = 'Możesz usuwać tylko swoje wiadomości.'
+    #end
   end
   
   private
