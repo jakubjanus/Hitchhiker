@@ -31,7 +31,7 @@
             %td
               = link_to 'pokaż', reservation.drive
             %td
-              = link_to 'usuń', ''
+              = link_to 'usuń', '/reservations/' + reservation.id.to_s + '/remove'
               
         - @user.get_unaccepted_reservations.each do |reservation|
           %tr
@@ -49,9 +49,41 @@
             %td
               = link_to 'pokaż', reservation.drive
             %td
-              = link_to 'usuń', ''
+              = link_to 'usuń', '/reservations/' + reservation.id.to_s + '/remove'
 
   - else
   
     %p
       Aktulanie nie masz żadnych rezerwacji
+      
+  %h3 Rezerwacje do Twoich przejazdów
+  
+  - if @user.get_unaccepted_reservations_from_my_drives.length + @user.get_accepted_reservations_from_my_drives.length > 0
+    %table.drives_index
+      %thead
+        %tr
+          %td użytkownik
+          %td zaakceptowana
+          %td
+      %tbody
+        - @user.get_unaccepted_reservations_from_my_drives.each do |reservation|
+          %tr
+            %td
+              = link_to reservation.user.name, ''
+            %td
+              niezaakceptowana
+            %td
+              = link_to 'akceptuj', 'reservations/' + reservation.id.to_s + '/accept'
+          
+        - @user.get_accepted_reservations_from_my_drives.each do |reservation|
+          %tr
+            %td
+              = link_to reservation.user.name, ''
+            %td
+              zaakceptowana
+            %td
+          
+  - else
+    %p
+      Nie masz żadnych rezerwacji.
+        

@@ -1,0 +1,14 @@
+%h3{:style => 'margin-bottom: 2px'} 
+  Rezerwacje
+%table.drives_index{:style => 'width: 200px'}
+  %thead
+    %tr
+      %td użytkownik
+      %td
+  %tbody
+    - @drive.get_unaccepted_reservations.each do |reservation|
+      %tr
+        %td
+          = link_to reservation.user.name, ''
+        %td
+          = link_to 'akceptuj', 'reservations/' + reservation.id.to_s + '/accept'

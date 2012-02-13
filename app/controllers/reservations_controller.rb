@@ -18,7 +18,25 @@ class ReservationsController < ApplicationController
   end
   
   def remove
-    
+    reservation = Reservation.find(params[:id])
+    if current_user.id == reservation.user.id
+      reservation.destroy
+      flash[:notice] = 'Usunięto rezerwację.'
+    else
+      flash[:error] = 'Możesz usuwać tylko swoje rezerwacje.'
+    end
+    redirect_to root_path
+  end
+  
+  def accept
+    reservation = Reservation.find(params[:id])
+    if current_user.id == reservation.user.id
+      current_user.accept_reservation(reservation)
+      flash[:notice] = 'Zaakceptowano rezerwację.'
+    else
+      flash[:error] = 'Możesz akceptować tylko swoje rezerwacje.'
+    end
+    redirect_to root_path
   end
   
   private

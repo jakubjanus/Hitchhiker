@@ -26,6 +26,20 @@ class Drive < ActiveRecord::Base
     end
   end
   
+  def get_unaccepted_reservations
+    res = []
+    self.reservations.each do |reservation|
+      res << reservation unless reservation.is_accepted
+    end
+  end
+  
+  def get_accepted_reservations
+    res = []
+    self.reservations.each do |reservation|
+      res << reservation if reservation.is_accepted
+    end
+  end
+  
   def accept_reservation(reservation)
     if self.free_seats > 0
       reservation.accept

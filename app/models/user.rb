@@ -37,6 +37,26 @@ class User < ActiveRecord::Base
     res
   end
   
+  def get_accepted_reservations_from_my_drives
+    res = []
+    self.drives.each do |drive|
+      drive.get_accepted_reservations.each do |reservation|
+        res << reservation if reservation.is_accepted
+      end
+    end
+    res
+  end
+  
+  def get_unaccepted_reservations_from_my_drives
+    res = []
+    self.drives.each do |drive|
+      drive.get_accepted_reservations.each do |reservation|
+        res << reservation unless reservation.is_accepted
+      end
+    end
+    res
+  end
+  
   def make_reservation(drive)
     if drive.free_seats > 0
       Reservation.create({:user => self, :drive => drive})
