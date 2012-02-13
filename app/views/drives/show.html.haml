@@ -78,7 +78,6 @@
       
     - if current_user and @drive.user.id == current_user.id
       
-      = link_to 'edytuj przejazd', edit_drive_path(@drive) if @drive.is_up_to_date
       = link_to 'usuń przejazd', {:action => 'destroy', :id => @drive.id}, :confirm => "Jesteś pewien?", :method => 'delete'
       
       %div{:style => 'margin-top: 25px'}
