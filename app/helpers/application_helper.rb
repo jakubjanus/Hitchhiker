@@ -1,3 +1,4 @@
+ # -*- coding: utf-8 -*-
 module ApplicationHelper
   def new_drive_path
     new_drife_path
@@ -9,6 +10,11 @@ module ApplicationHelper
   
   def drive_path
     drife_path
+  end
+  
+  def translate_visibility(visibility)
+    vis = {'everyone' => 'wszyscy', 'nobody' => 'nikt', 'registered' => 'zarejestrowani użytkownicy'}
+    vis[visibility]
   end
   
   def build_date_from_params(field_name, params)

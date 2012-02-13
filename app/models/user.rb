@@ -15,6 +15,10 @@ class User < ActiveRecord::Base
   belongs_to :hometown, :class_name => "City", :foreign_key => "hometown_id"
   
   
+  def User.get_visibilities
+    ['everyone', 'registered', 'nobody']
+  end
+  
   def self.find_for_database_authentication(warden_conditions)
    conditions = warden_conditions.dup
    login = conditions.delete(:login)
@@ -145,29 +149,45 @@ class User < ActiveRecord::Base
     end
   end
   
+  def set_hometown_visibility(visibility)
+    if visibility_check(visibility)
+      self.show_hometown = visibility
+      self.save
+    end
+  end
+  
   def set_email_visibility(visibility)
-    self.show_email = visibility if visibility_check(visibility)
+    if visibility_check(visibility)
+      self.show_email = visibility
+      self.save
+    end
   end
   
   def set_alt_email_visibility(visibility)
-    self.show_alt_email if visibility_check(visibility)
+    if visibility_check(visibility)
+      self.show_alt_email = visibility
+      self.save
+    end
   end
   
-  def set_hometown_visibility(visibility)
-    self.show_hometown = visibility if visibility_check(visibility)
+  def set_phone_number_visibility(visibility)
+    if visibility_check(visibility)
+      self.show_phone_number = visibility
+      self.save
+    end
   end
   
   private
-  def visibility_check(visibility)
-    visibility == 'everyone' or visibility == 'signed_up'
-  end
-  
   def email_check(email)
     email =~ %r{^[0-9a-z][0-9a-z.+]+[0-9a-z]@[0-9a-z][0-9a-z.-]+[0-9a-z]$}xi
   end
   
   def name_check(name)
     name =~ %r{^[(A-Z)|(a-z)]+$}
+  end
+  
+  def visibility_check(visibility)
+    ['everyone', 'registered', 'nobody'].include?(visibility)
   end
   
   def build_date(value)

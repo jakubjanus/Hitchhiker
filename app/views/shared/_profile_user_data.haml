@@ -32,6 +32,9 @@
       Email:
     %span{:id => 'email_value'}
       = @user.email
+    %span
+      widoczność:
+      = translate_visibility(@user.show_email)
      
   .info
     %span
@@ -41,6 +44,9 @@
         = @user.alt_email
       - else
         brak danych
+    %span
+      widoczność:
+      = translate_visibility(@user.show_alt_email)
         
   .info
     %span
@@ -50,6 +56,9 @@
         = @user.phone_number
       - else
         brak danych
+    %span
+      widoczność:
+      = translate_visibility(@user.show_phone_number)
         
   .info
     %span
@@ -68,6 +77,9 @@
         = @user.hometown.name
       - else
         brak danych
+    %span
+      widoczność:
+      = translate_visibility(@user.show_hometown)
         
   #buttons_div
     %button{:id => 'edit_profile'}

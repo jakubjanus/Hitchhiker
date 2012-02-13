@@ -12,7 +12,7 @@ class DrivesController < ApplicationController
     @throughs.each do |through|
       throughs_adds << through.city.name
     end
-    redirect = (!current_user or (current_user and !@drive.is_up_to_date and @drive.user.id != current_user.id))
+    redirect = ((!current_user and !@drive.is_up_to_date) or (current_user and !@drive.is_up_to_date and @drive.user.id != current_user.id))
     
     respond_to do |format|
       format.json do
