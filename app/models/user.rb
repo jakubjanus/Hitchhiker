@@ -7,7 +7,8 @@ class User < ActiveRecord::Base
   attr_accessor :login
   
   has_many :drives, :class_name => 'Drive'
-  
+  has_many :messages_as_sender, :class_name => "Message", :foreign_key => "sender_id"
+  has_many :messages_as_recipient, :class_name => "Message", :foreign_key => "recipient_id"
   belongs_to :hometown, :class_name => "City", :foreign_key => "hometown_id"
   
   
@@ -15,6 +16,18 @@ class User < ActiveRecord::Base
    conditions = warden_conditions.dup
    login = conditions.delete(:login)
    where(conditions).where(["lower(name) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+  end
+  
+  def send_message(recipient, title, contents)
+    Message.create({:sender_id => self.id, :recipient_id => recipient.id, :contents => contents, :title => title})
+  end
+  
+  def get_unread_messages()
+    res = []
+    self.messages_as_recipient.each do |message|
+      res << message unless message.is_read
+    end
+    res
   end
   
   def get_up_to_date_drives

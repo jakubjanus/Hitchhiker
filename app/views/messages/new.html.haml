@@ -1,0 +1,17 @@
+%h1
+  Wiadomość do użytkownika
+  = @recipient.name
+  
+= form_tag('/messages/' + @sender.id.to_s + '/' + @recipient.id.to_s) do
+
+  %div
+    %span
+      Tytuł
+    %span
+      = text_field_tag :title, nil, {:id => 'title'}
+  %div
+    %span
+      = text_area_tag :contents, nil, {:id => 'contents', :rows => 10, :cols => 40}
+  %div
+    %span
+      = submit_tag 'wyślij'

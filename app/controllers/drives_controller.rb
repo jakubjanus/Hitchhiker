@@ -12,13 +12,19 @@ class DrivesController < ApplicationController
     @throughs.each do |through|
       throughs_adds << through.city.name
     end
+    redirect = (!current_user or (current_user and !@drive.is_up_to_date and @drive.user.id != current_user.id))
     
     respond_to do |format|
-      #format.json do
-        #render :json => {:start_add => start_add, :destination_add => dest_add, :throughs => throughs_adds}
-      #end
+      format.json do
+        render :json => {:start_add => start_add, :destination_add => dest_add, :throughs => throughs_adds}
+      end
       format.html do
-        render 'show'
+        if redirect
+          flash[:error] = 'Nie masz uprawnień do przeglądania tej strony. Możesz przeglądać tylko aktualne cudze przejazdy.'
+          redirect_to root_path
+        else
+          render 'show'
+        end
       end
     end
   end
@@ -64,7 +70,17 @@ class DrivesController < ApplicationController
   
   def edit
     @drive = Drive.find(params[:id])
-    
+    if @drive.user.id == current_user.id
+      if @drive.is_up_to_date
+        
+      else
+        flash[:error] = 'Możesz edytować tylko aktualne przejazdy.'
+        redirect_to root_path
+      end
+    else
+      flash[:error] = 'Nie możesz edytować nie swoich przejazdów.'
+      redirect_to root_path
+    end
   end
   
   def create

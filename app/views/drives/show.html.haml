@@ -59,11 +59,18 @@
         
     - if @drive.user.id == current_user.id
       
-      = link_to 'edytuj przejazd', edit_drive_path(@drive)
+      = link_to 'edytuj przejazd', edit_drive_path(@drive) if @drive.is_up_to_date
       = link_to 'usuń przejazd', {:action => 'destroy', :id => @drive.id}, :confirm => "Jesteś pewien?", :method => 'delete'
       
     - else
-    
+      
+      %div
+        %span
+          Wystawiono przez:
+        %span
+          = link_to @drive.user.name, ''
+          = link_to 'wyślij wiadomość', '/messages/new/' + current_user.id.to_s + '/' + @drive.user.id.to_s
+          
       = link_to 'złóż rezerwację', ''
       
   #map_canvas{:style => "width:350px; height:350px; float: right; position: absolute; left: 350px; top: 50px;"}
