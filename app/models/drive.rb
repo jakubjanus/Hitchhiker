@@ -10,6 +10,7 @@ class Drive < ActiveRecord::Base
   
   has_many :mid_locations, :dependent => :destroy
   has_many :cities, :through => :mid_locations, :dependent => :destroy
+  has_many :reservations
   
   
   def Drive.search(start, destination)
@@ -22,6 +23,16 @@ class Drive < ActiveRecord::Base
   def Drive.search_up_to_date(start, destination)
     if start and destination
       Drive.get_up_to_date(Drive.search(start, destination))
+    end
+  end
+  
+  def accept_reservation(reservation)
+    if self.free_seats > 0
+      reservation.accept
+      self.free_seats -= 1
+      true
+    else
+      false
     end
   end
   

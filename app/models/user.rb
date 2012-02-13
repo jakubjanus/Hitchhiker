@@ -1,3 +1,4 @@
+ # -*- coding: utf-8 -*-
 class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :authentication_keys => [:login]
@@ -10,6 +11,7 @@ class User < ActiveRecord::Base
   has_many :messages_as_sender, :class_name => "Message", :foreign_key => "sender_id"
   has_many :messages_as_recipient, :class_name => "Message", :foreign_key => "recipient_id"
   has_many :messages, :class_name => 'Message', :foreign_key => 'owner_id'
+  has_many :reservations
   belongs_to :hometown, :class_name => "City", :foreign_key => "hometown_id"
   
   
@@ -17,6 +19,47 @@ class User < ActiveRecord::Base
    conditions = warden_conditions.dup
    login = conditions.delete(:login)
    where(conditions).where(["lower(name) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+  end
+  
+  def get_accepted_reservations
+    res = []
+    self.reservations.each do |reservation|
+      res << reservation if reservation.is_accepted
+    end
+    res
+  end
+  
+  def get_unaccepted_reservations
+    res = []
+    self.reservations.each do |reservation|
+      res << reservation unless reservation.is_accepted
+    end
+    res
+  end
+  
+  def make_reservation(drive)
+    if drive.free_seats > 0
+      Reservation.create({:user => self, :drive => drive})
+      send_message(drive.user, 'Rezerwacja', 'Witam. Zgłaszam rezerwację dotyczącą' + 
+        ' przejazdu  numer ' + drive.id.to_s + '. Z ' + drive.start_city.name +
+        ' do ' + drive.destination_city.name)
+    end
+  end
+  
+  def accept_reservation(reservation)
+    if reservation.drive.user.id == self.id
+      if reservation.drive.accept_reservation(reservation)
+        send_message(reservation.user, 'Zaakceptowana rezerwacja', 'Twoja rezerwacja została zaakceptowana.')
+      end    
+    end
+  end
+  
+  def check_if_already_reserved(drive)
+    cond = false
+    self.reservations.each do |reservation|
+      cond = true if reservation.drive.id == drive.id
+    end
+    cond
   end
   
   def send_message(recipient, title, contents)

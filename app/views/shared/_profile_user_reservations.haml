@@ -1,0 +1,57 @@
+#user_reservations
+
+  %h3 Twoje rezerwacje
+  
+  - if @user.reservations.length > 0
+  
+    %table.drives_index
+      %thead
+        %tr
+          %td miejsce startowe
+          %td miejsce docelowe
+          %td ilość wolnych miejsc
+          %td data wyjazdu
+          %td zaakceptowana
+          %td
+          %td
+      %tbody
+        - @user.get_accepted_reservations.each do |reservation|
+          %tr
+            %td
+              = reservation.drive.start_city.name
+            %td
+              = reservation.drive.destination_city.name
+            %td
+              = reservation.drive.free_seats
+            %td
+              = reservation.drive.date
+            %td
+              = 'zaakceptowana' if reservation.is_accepted
+              = 'niezaakceptowana' unless reservation.is_accepted
+            %td
+              = link_to 'pokaż', reservation.drive
+            %td
+              = link_to 'usuń', ''
+              
+        - @user.get_unaccepted_reservations.each do |reservation|
+          %tr
+            %td
+              = reservation.drive.start_city.name
+            %td
+              = reservation.drive.destination_city.name
+            %td
+              = reservation.drive.free_seats
+            %td
+              = reservation.drive.date
+            %td
+              = 'zaakceptowana' if reservation.is_accepted
+              = 'niezaakceptowana' unless reservation.is_accepted
+            %td
+              = link_to 'pokaż', reservation.drive
+            %td
+              = link_to 'usuń', ''
+
+  - else
+  
+    %p
+      Aktulanie nie masz żadnych rezerwacji

@@ -33,10 +33,18 @@ class MessagesController < ApplicationController
   end
   
   def destroy
-    #if current_user.id == Message.find(params[:id])
-    #else
-    #  flash[:error] = 'Możesz usuwać tylko swoje wiadomości.'
-    #end
+    message = Message.find(params[:id])
+    if current_user.id == message.owner.id
+      if message.is_read
+        Message.find(params[:id]).destroy
+        flash[:notice] = 'Usunięto wiadomość.'
+      else
+        flash[:error] = 'Nie możesz usuwać nieprzeczytanych wiadomości.'
+      end
+    else
+      flash[:error] = 'Możesz usuwać tylko swoje wiadomości.'
+    end
+    redirect_to root_path
   end
   
   private

@@ -8,6 +8,9 @@ Hitchhiker::Application.routes.draw do
   match ':messages/:new/:sender_id/:recipient_id' => 'messages#new'
   match ':messages/:sender_id/:recipient_id' => 'messages#create', :via => :post
   resources :messages, :only => [:show, :destroy]
+  
+  match ':reservations/:drive_id/:user_id' => 'reservations#create'
+  match ':reservations/:drive_id/:user_id/remove' => 'reservations#remove'
 
   resources :drives do
     collection do

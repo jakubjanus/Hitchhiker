@@ -19,6 +19,9 @@
             Twoje przejazdy
         %li
           %a{:href => '#tab3'}
+            Rezerwacje
+        %li
+          %a{:href => '#tab4'}
             Wiadomości
           
       #tab1
@@ -26,4 +29,7 @@
       #tab2
         = render  'shared/profile_user_drives'
       #tab3
+        = render 'shared/profile_user_reservations'
+      #tab4
         = render 'shared/profile_user_messages'
+      

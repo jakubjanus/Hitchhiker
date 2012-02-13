@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120213021053) do
+ActiveRecord::Schema.define(:version => 20120213030033) do
 
   create_table "cities", :force => true do |t|
     t.string   "name",       :null => false
@@ -51,6 +51,14 @@ ActiveRecord::Schema.define(:version => 20120213021053) do
     t.integer  "drive_id",                  :null => false
     t.integer  "city_id",                   :null => false
     t.integer  "order",      :default => 0, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "reservations", :force => true do |t|
+    t.integer  "user_id",                        :null => false
+    t.integer  "drive_id",                       :null => false
+    t.boolean  "is_accepted", :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
