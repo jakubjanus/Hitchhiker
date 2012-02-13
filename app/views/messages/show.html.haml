@@ -1,0 +1,20 @@
+- if @is_sender
+
+  JEST
+
+-else
+
+  %h1
+    Wiadomość od użytkownika
+    = @sender.name
+  %div
+    %span
+      Tytuł
+    %span
+      = @title
+  %div
+    %span
+      = @contents
+  %div
+    %span
+      = link_to 'odpowiedz', '/messages/new/' + current_user.id.to_s + '/' + @sender.id.to_s

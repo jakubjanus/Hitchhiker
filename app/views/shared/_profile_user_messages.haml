@@ -1,0 +1,54 @@
+#user_messages
+
+  %h3 Nieprzeczytane wiadomości
+  
+  - if @user.get_unread_messages.length > 0
+  
+    %table.drives_index
+      %thead
+        %tr
+          %td nadawca
+          %td tytuł
+          %td
+      %tbody
+        - @user.get_unread_messages.each do |message|
+          %tr
+            %td
+              = message.sender.name
+            %td
+              = message.title
+            %td
+              = link_to 'przeczytaj', '/messages/' + message.id.to_s
+    
+  -else
+  
+    %p
+      W tej chwili nie masz żadnych nowych wiadomości.
+      
+  %h3 Archiwalne wiadomości
+  
+  - if @user.get_read_messages.length > 0
+  
+    %table.drives_index
+      %thead
+        %tr
+          %td nadawca
+          %td tytuł
+          %td
+          %td
+      %tbody
+        - @user.get_read_messages.each do |message|
+          %tr
+            %td
+              = message.sender.name
+            %td
+              = message.title
+            %td
+              = link_to 'przeczytaj', '/messages/' + message.id.to_s
+            %td
+              = link_to 'usuń wiadomość', ''
+  
+  -else
+  
+    %p
+      W tej chwili nie masz żadnych przeczytanych wiadomości.

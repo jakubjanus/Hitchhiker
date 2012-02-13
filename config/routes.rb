@@ -7,6 +7,7 @@ Hitchhiker::Application.routes.draw do
   match 'home/profil/edit_user', :controller => 'home', :action => 'edit_user'
   match ':messages/:new/:sender_id/:recipient_id' => 'messages#new'
   match ':messages/:sender_id/:recipient_id' => 'messages#create', :via => :post
+  resources :messages, :only => [:show]
 
   resources :drives do
     collection do
@@ -21,7 +22,6 @@ Hitchhiker::Application.routes.draw do
     end
   end
   
-  #resources :messages, :only => [:new, :create]
   
   root :to => 'home#index'
 end

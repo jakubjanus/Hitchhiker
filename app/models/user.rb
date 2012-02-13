@@ -22,10 +22,18 @@ class User < ActiveRecord::Base
     Message.create({:sender_id => self.id, :recipient_id => recipient.id, :contents => contents, :title => title})
   end
   
-  def get_unread_messages()
+  def get_unread_messages
     res = []
     self.messages_as_recipient.each do |message|
       res << message unless message.is_read
+    end
+    res
+  end
+  
+  def get_read_messages
+    res = []
+    self.messages_as_recipient.each do |message|
+      res << message if message.is_read
     end
     res
   end

@@ -1,8 +1,22 @@
  # -*- coding: utf-8 -*-
 class MessagesController < ApplicationController
  
-  before_filter :authenticate_user!, :only => [:create]
- 
+  before_filter :authenticate_user!, :only => [:create, :show]
+  
+  def show
+    message = Message.find(params[:id])
+    if current_user.id == message.sender.id or current_user.id == message.recipient.id
+      @is_sender = true if current_user.id == message.sender.id
+      @sender = message.sender
+      @recipient = message.recipient
+      @title = message.title
+      @contents = message.read_message
+    else
+      flash[:error] = 'Nie możesz przeglądać nie swoich wiadomości.'
+      redirect_to root_path
+    end
+  end
+  
   def new
     @sender = User.find(params[:sender_id])
     @recipient = User.find(params[:recipient_id])
