@@ -18,25 +18,28 @@ class ProfileServerSide
     
   changePersonalUserData: (onLoad) =>
     data = @.getData()
-    console.log data
     $.get("#{@baseUrl}/home/profil/edit_user", data, onLoad)
     
   getData: =>
     data = []
-    data.push @.getValue('first_name')
-    data.push @.getValue('last_name')
-    data.push @.getValue('email')
-    data.push @.getValue('alt_email')
-    data.push @.getValue('phone_number')
-    data.push @.getValue('birthdate')
-    data.push @.getValue('hometown')
+    data.push @.getValue('first_name', '_value_input')
+    data.push @.getValue('last_name', '_value_input')
+    data.push @.getValue('email', '_value_input')
+    data.push @.getValue('alt_email', '_value_input')
+    data.push @.getValue('phone_number', '_value_input')
+    data.push @.getValue('birthdate', '_value_input')
+    data.push @.getValue('hometown', '_value_input')
+    data.push @.getValue('email_visibility', '_select')
+    data.push @.getValue('alt_email_visibility', '_select')
+    data.push @.getValue('phone_number_visibility', '_select')
+    data.push @.getValue('hometown_visibility', '_select')
     data
     
-  getValue: (atr) =>
-    unless $('#'+atr+'_value_input').val() is 'brak danych'
+  getValue: (atr, suffix) =>
+    unless $('#'+atr+suffix).val() is 'brak danych'
       res=
         name: atr
-        value: $('#'+atr+'_value_input').val()
+        value: $('#'+atr+suffix).val()
 
 class ProfileView
   constructor: (@serverSide) ->
@@ -48,6 +51,10 @@ class ProfileView
     @phone_number = $.trim($('#phone_number_value').text())
     @birthdate = $.trim($('#birthdate_value').text())
     @hometown = $.trim($('#hometown_value').text())
+    @email_visibility = $.trim($('#email_visibility').text())
+    @alt_email_visibility = $.trim($('#alt_email_visibility').text())
+    @phone_number_visibility = $.trim($('#phone_number_visibility').text())
+    @hometown_visibility = $.trim($('#hometown_visibility').text())
     
   setInfoView: =>
     $('#name_value').text(@name)
@@ -70,10 +77,24 @@ class ProfileView
     @.addInput('phone_number_value', @phone_number)
     @.addInput('birthdate_value', @birthdate)
     @.addInput('hometown_value', @hometown)
+    @.addSelectVisibilities()
     
     $('#buttons_div').html(@.createButton('info_profile', 'powrót') + @.createButton('save_profile', 'zapisz'))
     $('#info_profile').button()
     $('#save_profile').button()
+    
+  addSelectVisibilities: () =>
+    $('#email_visibility').html(@.getSelectVisibilityTag('email_visibility_select'))
+    $('#alt_email_visibility').html(@.getSelectVisibilityTag('alt_email_visibility_select'))
+    $('#phone_number_visibility').html(@.getSelectVisibilityTag('phone_number_visibility_select'))
+    $('#hometown_visibility').html(@.getSelectVisibilityTag('#hometown_visibility_select'))
+    
+  getSelectVisibilityTag: (id) =>
+    '<select id="' + id + '" name="' + id + '">' +
+      '<option value="everyone">wszyscy</option>' +
+      '<option value="nobody">nikt</option>' +
+      '<option value="registered">zarejestrowani</option></select>'
+            
     
   addInput: (elementId, attr) =>
     $('#'+elementId).html('<input type="text" id="' + elementId + '_input" name="' + 

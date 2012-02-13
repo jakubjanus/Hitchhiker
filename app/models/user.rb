@@ -134,9 +134,28 @@ class User < ActiveRecord::Base
     self.birthdate = build_date(data['birthdate']) if data['birthdate']
     self.hometown = City.findOrCreate(data['hometown']) if data['hometown']
     
-    # and visibilities
+    self.set_email_visibility(data['email_visibility']) if data['email_visibility']
+    self.set_alt_email_visibility(data['alt_email_visibility']) if data['alt_email_visibility']
+    self.set_phone_number_visibility(data['phone_number_visibility']) if data['phone_number_visibility']
+    self.set_hometown_visibility(data['hometown_visibility']) if data['hometown_visibility']
     
     self.save
+  end
+  
+  def get_hometown(user)
+    self.hometown if self.show_hometown == 'everyone' or (user and self.show_hometown == 'registered')
+  end
+  
+  def get_phone_number(user)
+    self.phone_number if self.show_phone_number == 'everyone' or (user and self.show_phone_number == 'registered')
+  end
+
+  def get_email(user)
+    self.email if self.show_email == 'everyone' or (user and self.show_email == 'registered')
+  end
+  
+  def get_alt_email(user)
+    self.alt_email if self.show_alt_email == 'everyone' or (user and self.show_alt_email == 'registered')
   end
   
   def set_hometown(city)

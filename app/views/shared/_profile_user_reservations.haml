@@ -64,6 +64,7 @@
         %tr
           %td użytkownik
           %td zaakceptowana
+          %td dotyczy
           %td
       %tbody
         - @user.get_unaccepted_reservations_from_my_drives.each do |reservation|
@@ -72,6 +73,8 @@
               = link_to reservation.user.name, ''
             %td
               niezaakceptowana
+            %td
+              = link_to 'pokaż', reservation.drive
             %td
               = link_to 'akceptuj', 'reservations/' + reservation.id.to_s + '/accept'
           

@@ -57,6 +57,25 @@
       %span
         = @drive.free_seats
         
+    %div
+      - if @drive.user.get_email(current_user)
+        %span
+          email wystawiającego:
+        %span
+          = @drive.user.get_email(current_user)
+    %div
+      - if @drive.user.get_alt_email(current_user)
+        %span
+          drugi email wystawiającego:
+        %span
+          = @drive.user.get_alt_email(current_user)
+    %div   
+      - if @drive.user.get_phone_number(current_user)
+        %span
+          numer telefonu wystawiającego:
+        %span
+          = @drive.user.get_phone_number(current_user)
+      
     - if current_user and @drive.user.id == current_user.id
       
       = link_to 'edytuj przejazd', edit_drive_path(@drive) if @drive.is_up_to_date
