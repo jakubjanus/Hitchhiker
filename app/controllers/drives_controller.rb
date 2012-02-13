@@ -30,7 +30,7 @@ class DrivesController < ApplicationController
   end
   
   def index
-    @drives = Drive.paginate :page => params[:page], :per_page => 10
+    @drives = Drive.where('date >= :today',{:today => Date.today}).paginate :page => params[:page], :per_page => 10
   end
   
   def search

@@ -26,6 +26,14 @@ class Drive < ActiveRecord::Base
     end
   end
   
+  def Drive.all_up_to_date()
+    res = []
+    Drive.all.each do |drive|
+      res << drive if drive.is_up_to_date
+    end
+    res
+  end
+  
   def get_unaccepted_reservations
     res = []
     self.reservations.each do |reservation|
