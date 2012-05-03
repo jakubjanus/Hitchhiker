@@ -5,19 +5,12 @@ class DrivesController < ApplicationController
   
   def show
     @drive = Drive.find(params[:id])
-    @throughs = @drive.mid_locations
-    start_add = @drive.start_city.name
-    dest_add = @drive.destination_city.name
-    throughs_adds = []
-    @throughs.each do |through|
-      throughs_adds << through.city.name
-    end
     redirect = ((!current_user and !@drive.is_up_to_date) or (current_user and !@drive.is_up_to_date and @drive.user.id != current_user.id))
     
     respond_to do |format|
-      format.json do
-        render :json => {:start_add => start_add, :destination_add => dest_add, :throughs => throughs_adds}
-      end
+      
+      format.json{}
+      
       format.html do
         if redirect
           flash[:error] = 'Nie masz uprawnień do przeglądania tej strony. Możesz przeglądać tylko aktualne cudze przejazdy.'
