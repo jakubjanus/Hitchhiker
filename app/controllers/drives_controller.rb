@@ -1,7 +1,7 @@
  # -*- coding: utf-8 -*-
 class DrivesController < ApplicationController
   
-  before_filter :authenticate_user!, :only => [:create, :edit, :destroy, :edit, :destroy]
+  before_filter :authenticate_user!, :only => [:create, :destroy, :edit, :destroy]
   
   def show
     @drive = Drive.find(params[:id])

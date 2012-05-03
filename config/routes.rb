@@ -12,7 +12,6 @@ Hitchhiker::Application.routes.draw do
   match ':reservations/:id/remove' => 'reservations#remove'
   match ':reservations/:id/accept' => 'reservations#accept'
   match ':reservations/:drive_id/:user_id' => 'reservations#create'
-  
 
   resources :drives do
     collection do
