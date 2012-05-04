@@ -29,7 +29,7 @@ class ServerSide
   createLocationObject: (name, city) =>
     res=
       name: name
-      value: new LatLon(city.location.Pa, city.location.Qa).toJSON()
+      value: new LatLon(city.location.$a, city.location.ab).toJSON()
       
 
 class SearchSiteEventMenager

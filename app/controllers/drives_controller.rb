@@ -8,9 +8,7 @@ class DrivesController < ApplicationController
     redirect = ((!current_user and !@drive.is_up_to_date) or (current_user and !@drive.is_up_to_date and @drive.user.id != current_user.id))
     
     respond_to do |format|
-      
       format.json{}
-      
       format.html do
         if redirect
           flash[:error] = 'Nie masz uprawnień do przeglądania tej strony. Możesz przeglądać tylko aktualne cudze przejazdy.'
@@ -27,24 +25,19 @@ class DrivesController < ApplicationController
   end
   
   def search
-    start_latlon = ActiveSupport::JSON.decode(params[:start_location])
-    dest_latlon = ActiveSupport::JSON.decode(params[:dest_location])
+    @drives = []
+    if (params[:start_location] and params[:dest_location]) or (params[:start_address] and params[:dest_address])
+      start_latlon = ActiveSupport::JSON.decode(params[:start_location])
+      dest_latlon = ActiveSupport::JSON.decode(params[:dest_location])
     
-    start_city = City.findByName(params[:start_address]) || City.findByCoordinates(roundCoordinate(start_latlon['latitude']), roundCoordinate(start_latlon['longitude']))
-    dest_city = City.findByName(params[:dest_address]) || City.findByCoordinates(roundCoordinate(dest_latlon['latitude']), roundCoordinate(dest_latlon['longitude']))
-    
-    @drives = Drive.search_up_to_date(start_city, dest_city)
-
-    if @drives
-      @drives.collect! do |drive|
-        drive = drive.get_info_json
-      end
+      start_city = City.findByName(params[:start_address]) || City.findByCoordinates(roundCoordinate(start_latlon['latitude']), roundCoordinate(start_latlon['longitude']))
+      dest_city = City.findByName(params[:dest_address]) || City.findByCoordinates(roundCoordinate(dest_latlon['latitude']), roundCoordinate(dest_latlon['longitude']))
+      
+      @drives = Drive.search_up_to_date(start_city, dest_city)
     end
     
     respond_to do |format|
-      format.json do
-        render :json => @drives
-      end
+      format.json{}
     end
   end
   
